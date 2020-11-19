@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import React, { useState, useEffect } from 'react';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import { Grid, Box } from '@material-ui/core';
-import { FormControl, Select, MenuItem, InputLabel, Input, Button } from '@material-ui/core';
+import { FormControl, Select, MenuItem, InputLabel, Input, Button, Checkbox, ListItemText } from '@material-ui/core';
 import { Chip, CircularProgress } from '@material-ui/core';
 import {
     MuiPickersUtilsProvider,
@@ -75,7 +75,7 @@ export default () => {
     const [dateFrom, setDateFrom] = useState<Date | null>(new Date());
     const [dateTo, setDateTo] = useState<Date | null>(new Date());
 
-    const [tuneUrlID, setTuneUrlID] = useState<String[]>([]);
+    const [tuneUrlID, setTuneUrlID] = useState<Number[]>([]);
     const [tuneUrlIdList, setTuneUrlIdList] = useState<number[] | null>(null);
 
     const [requireGraphData, setRequireGraphData] = useState(false);
@@ -85,7 +85,7 @@ export default () => {
     const [graph2Data, setGraph2Data] = useState<dataGraph2T | null>(null);
 
     const handleSetTuneUrlID = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setTuneUrlID(event.target.value as string[]);
+        setTuneUrlID(event.target.value as number[]);
     };
 
     // load TuneUrlIDs
@@ -100,10 +100,19 @@ export default () => {
     }, []);
 
     // filling Select element
-    const TuneUrlIdItemsList = tuneUrlIdList?.map(el => <MenuItem key={el} value={el}>{el}</MenuItem>) || null;
+    const TuneUrlIdItemsList = tuneUrlIdList?.map(el => {
+        return (
+            <MenuItem key={el} value={el}>
+                <Checkbox checked={tuneUrlID.includes(el)} />
+                <ListItemText primary={el} />
+            </MenuItem>
+        )
+    }) || null;
 
     // get graph data
     useEffect(() => {
+        setRequireGraphData(false);
+
         if (!(requireGraphData && dateFrom && dateTo)) return;
         if (tuneUrlID.length === 0) return;
 
@@ -126,8 +135,6 @@ export default () => {
                 setGraph1Data(data.data.graph1);
                 setGraph2Data(data.data.graph2);
             });
-
-        setRequireGraphData(false);
     }, [requireGraphData]);
 
     const handleGraph = () => {
@@ -149,7 +156,7 @@ export default () => {
                                 variant="inline"
                                 format="dd/MM/yyyy"
                                 margin="normal"
-                                id="date-picker-inline"
+                                //id="date-picker-inline"
                                 label="From:"
                                 value={dateFrom}
                                 onChange={setDateFrom}
@@ -162,7 +169,7 @@ export default () => {
                                 variant="inline"
                                 format="dd/MM/yyyy"
                                 margin="normal"
-                                id="date-picker-inline"
+                                //id="date-picker-inline"
                                 label="To:"
                                 value={dateTo}
                                 onChange={setDateTo}
