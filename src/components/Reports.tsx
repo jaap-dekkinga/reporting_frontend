@@ -1,233 +1,26 @@
-import 'date-fns';
-import { format } from 'date-fns';
-import React, { useState, useEffect } from 'react';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { Grid, Box } from '@material-ui/core';
-import { FormControl, Select, MenuItem, InputLabel, Input, Button, Checkbox, ListItemText } from '@material-ui/core';
-import { Chip, CircularProgress } from '@material-ui/core';
-import {
-    MuiPickersUtilsProvider,
-    //DatePicker,
-    KeyboardDatePicker,
-} from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Box } from '@material-ui/core';
 
-import Graph1 from './Graph1';
-import Graph2 from './Graph2';
-import { API } from '../common/consts';
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        bordered: {
-            //border: "solid green 1px",
-        },
-        formControl: {
-            margin: theme.spacing(1),
-            minWidth: 120,
-            //  maxWidth: 300,
-        },
-        chips: {
-            display: 'flex',
-            flexWrap: 'wrap',
-        },
-        chip: {
-            margin: 2,
-        },
-        spinner: {
-            marginLeft: theme.spacing(2),
-            color: 'white',
-        },
-        graphBox: {
-            marginTop: 100
-        }
-    }),
-);
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 28;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
-    },
-};
-
-type graph1ItemT = {
-    value: number,
-    date: string
-};
-type dataGraph1T = {
-    heard: graph1ItemT[],
-    interested: graph1ItemT[],
-};
-type dataGraph2T = {
-    acted: number,
-    heard: number,
-    interested: number,
-    shared: number
-};
+import ReportImpact from './ReportImpact';
+import ReportTop10minuties from './ReportTop10minuties';
+import { getTuneUrlIDs } from '../actions';
 
 export default () => {
-    const classes = useStyles();
+    const dispatch = useDispatch();
 
-    const [dateFrom, setDateFrom] = useState<Date | null>(new Date());
-    const [dateTo, setDateTo] = useState<Date | null>(new Date());
-
-    const [tuneUrlID, setTuneUrlID] = useState<Number[]>([]);
-    const [tuneUrlIdList, setTuneUrlIdList] = useState<number[] | null>(null);
-
-    const [requireGraphData, setRequireGraphData] = useState(false);
-    const [showSpinner, setShowSpinner] = useState(false);
-
-    const [graph1Data, setGraph1Data] = useState<dataGraph1T | null>(null);
-    const [graph2Data, setGraph2Data] = useState<dataGraph2T | null>(null);
-
-    const handleSetTuneUrlID = (event: React.ChangeEvent<{ value: unknown }>) => {
-        setTuneUrlID(event.target.value as number[]);
-    };
-
-    // load TuneUrlIDs
     useEffect(() => {
-        fetch(API.getTuneUrlIDs, {
-            method: 'GET',
-            mode: 'cors',
-        })
-            .then(res => res.json())
-            .then(data => setTuneUrlIdList(data.items || null))
-            .catch(err => console.log("Can't load list of TuneURL_ID: ", err));
+        dispatch(getTuneUrlIDs());
     }, []);
 
-    // filling Select element
-    const TuneUrlIdItemsList = tuneUrlIdList?.map(el => {
-        return (
-            <MenuItem key={el} value={el}>
-                <Checkbox checked={tuneUrlID.includes(el)} />
-                <ListItemText primary={el} />
-            </MenuItem>
-        )
-    }) || null;
-
-    // get graph data
-    useEffect(() => {
-        setRequireGraphData(false);
-
-        if (!(requireGraphData && dateFrom && dateTo)) return;
-        if (tuneUrlID.length === 0) return;
-
-        setShowSpinner(true);
-
-        fetch(API.getGraphData, {
-            method: 'POST',
-            mode: 'cors',
-            body: JSON.stringify({
-                DateFrom: format(dateFrom, 'yyy-MM-dd'),
-                DateTo: format(dateTo, 'yyy-MM-dd'),
-                TuneURL_ID: tuneUrlID,
-            }),
-        })
-            .then(res => {
-                setShowSpinner(false);
-                return res.json();
-            })
-            .then(data => {
-                setGraph1Data(data.data.graph1);
-                setGraph2Data(data.data.graph2);
-            });
-    }, [requireGraphData]);
-
-    const handleGraph = () => {
-        if (!tuneUrlIdList) return;
-        setRequireGraphData(true);
-    };
-
     return (
-        <Box mt={3}>
-            <Box my={3} fontSize="h3.fontSize" fontWeight="fontWeightBold" color="#464646">
-                Report (Impact)
+        <>
+            <Box mt={3}>
+                <ReportImpact />
             </Box>
-            <Grid container spacing={2} alignItems="flex-end">
-                <Grid item md={6}>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <Grid container justify="space-between">
-                            <KeyboardDatePicker
-                                disableToolbar
-                                variant="inline"
-                                format="dd/MM/yyyy"
-                                margin="normal"
-                                //id="date-picker-inline"
-                                label="From:"
-                                value={dateFrom}
-                                onChange={setDateFrom}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                            />
-                            <KeyboardDatePicker
-                                disableToolbar
-                                variant="inline"
-                                format="dd/MM/yyyy"
-                                margin="normal"
-                                //id="date-picker-inline"
-                                label="To:"
-                                value={dateTo}
-                                onChange={setDateTo}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                            />
-                        </Grid>
-                    </MuiPickersUtilsProvider>
-                </Grid>
-                <Grid item md={5}>
-                    <FormControl className={classes.formControl}>
-                        <InputLabel >TuneURL ID</InputLabel>
-                        <Select
-                            multiple
-                            labelId="select-label"
-                            id="select"
-                            value={tuneUrlID}
-                            onChange={handleSetTuneUrlID}
-                            input={<Input id="select-multiple-chip" />}
-                            renderValue={(selected) => (
-                                <div className={classes.chips}>
-                                    {(selected as string[]).map((value) => (
-                                        <Chip key={value} label={value} className={classes.chip} />
-                                    ))}
-                                </div>
-                            )}
-                            MenuProps={MenuProps}
-                        >
-                            {TuneUrlIdItemsList}
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid item xs={1} container justify="flex-end">
-                    <Box mb={1}>
-                        <Button variant="contained" color="secondary" onClick={handleGraph}>
-                            Graph
-                            {showSpinner ? <CircularProgress size={20} className={classes.spinner} /> : null}
-                        </Button>
-                    </Box>
-                </Grid>
-            </Grid>
-            {
-                graph1Data && graph2Data ?
-                    <Box className={classes.graphBox}>
-                        <Grid container justify="space-between">
-                            <Grid item md={7}>
-                                <Graph1 data={graph1Data} />
-                            </Grid>
-                            <Grid item md={4}>
-                                <Box pt={4}>
-                                    <Graph2 data={graph2Data} />
-                                </Box>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                    : null
-            }
-        </Box>
+            <Box my={10}>
+               <ReportTop10minuties />
+            </Box>
+        </>
     )
 }

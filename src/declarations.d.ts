@@ -1,3 +1,1 @@
-declare module "d3-funnel" {
-    //export function constructor();
-}
+declare module "d3-funnel" {}
