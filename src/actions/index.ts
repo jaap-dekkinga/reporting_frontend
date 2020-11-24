@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import { actionTypes } from './types';
-import { API } from '../common/consts';
+import { API, initialState } from '../common/consts';
 
 const types = actionTypes;
 
@@ -27,5 +27,12 @@ export function getTuneUrlIDs() {
         } catch (err) {
             console.log("Can't load list of TuneURL_ID: ", err)
         }
+    }
+}
+
+export function refreshAuthData(authData: typeof initialState.authorization) {
+    return {
+        type: types.refreshAuthData,
+        authData: authData,
     }
 }

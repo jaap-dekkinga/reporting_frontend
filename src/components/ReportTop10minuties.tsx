@@ -225,7 +225,7 @@ export default () => {
                                             {i + 1}
                                         </TableCell>
                                         <TableCell align="right">{format(new Date(row.date_time), 'yyy-MM-dd')}</TableCell>
-                                        <TableCell align="right">{format(new Date(row.date_time), 'H:m')}</TableCell>
+                                        <TableCell align="right">{format(new Date(row.date_time), 'HH:mm')}</TableCell>
                                         <TableCell align="right">{row.count}</TableCell>
                                     </TableRow>
                                 ))}
