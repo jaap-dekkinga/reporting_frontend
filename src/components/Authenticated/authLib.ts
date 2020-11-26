@@ -7,7 +7,7 @@ interface tokenPayloadT extends authT {
     exp: number;
 };
 
-export default class Authorization {
+export default class Authentication {
     /**
      * Checking existing authentication state and token expiration time left
      * @param authorization 
@@ -46,9 +46,11 @@ export default class Authorization {
 
         const tokenObj1 = JSON.parse(decoded1);
 
+        // loading AWS public key to check jwt
         const res = await fetch(AWS_COGNITO_PUBLIC_KEY_LINK);
         const data = await res.json();
 
+        // looking for relevant key and checking jwt
         const keys = data.keys;
         for (let i = 0; i < keys.length; i++) {
             if (keys[i].kid === tokenObj1.kid) {

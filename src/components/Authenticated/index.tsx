@@ -23,6 +23,10 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+/**
+ * Checking authentication state,
+ * receiving AWS id_token from URI, loads public key and checking id_token (JWT) by them
+ */
 export default (props: propsT) => {
     const classes = useStyles();
     const dispatch = useDispatch();
