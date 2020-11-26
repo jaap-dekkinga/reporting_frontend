@@ -7,6 +7,8 @@ export default (state = initialState.authorization, action: actionsT) => {
     switch (action.type) {
         case types.refreshAuthData:
             return { ...action.authData };
+        case types.logout:
+            return { ...action.authData };
         default:
             return state;
     }

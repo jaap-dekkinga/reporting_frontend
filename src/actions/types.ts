@@ -5,6 +5,7 @@ export enum actionTypes {
     getTuneUrlIDs = "Try to get TuneURL IDs",
     storeTuneUrlIDs = "Storing received TuneURL IDs",
     refreshAuthData = "Refreshing authentication data",
+    logout = "Logout",
 }
 
 export type actionsT = {

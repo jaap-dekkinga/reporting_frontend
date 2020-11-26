@@ -36,3 +36,10 @@ export function refreshAuthData(authData: typeof initialState.authorization) {
         authData: authData,
     }
 }
+
+export function logout() {
+    return {
+        type: types.logout,
+        authData: initialState.authorization
+    }
+}

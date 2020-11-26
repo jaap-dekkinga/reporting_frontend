@@ -203,7 +203,7 @@ export default () => {
                 </Grid>
                 <Grid item xs={1} container justify="flex-end">
                     <Box mb={1}>
-                        <Button variant="contained" color="secondary" onClick={handleGraph}>
+                        <Button variant="contained" color="primary" onClick={handleGraph}>
                             Graph
                             {showSpinner ? <CircularProgress size={20} className={classes.spinner} /> : null}
                         </Button>

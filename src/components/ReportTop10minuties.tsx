@@ -136,7 +136,7 @@ export default () => {
     return (
         <>
             <Box my={3} fontSize="h3.fontSize" fontWeight="fontWeightBold" color="#464646">
-                Report: Top 10 minutes slots
+                Report: Top 10 slots
             </Box>
             <Grid container spacing={2} alignItems="flex-end">
                 <Grid item md={6}>
@@ -199,7 +199,7 @@ export default () => {
                 </Grid>
                 <Grid item xs={1} container justify="flex-end">
                     <Box mb={1}>
-                        <Button variant="contained" color="secondary" onClick={handleReport}>
+                        <Button variant="contained" color="primary" onClick={handleReport}>
                             Report
                             {showSpinner ? <CircularProgress size={20} className={classes.spinner} /> : null}
                         </Button>

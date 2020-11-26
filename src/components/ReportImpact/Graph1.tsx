@@ -43,6 +43,11 @@ export default ({ data }: { data: dataGraph1T }) => {
     });
     
     const options = {
+        elements: {
+            line: {
+                tension: 0
+            }
+        },
         scales: {
             xAxes: [{
                 ticks: {
