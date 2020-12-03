@@ -1,5 +1,11 @@
+export enum reports {
+    impact = 'Impact graph',
+    top10Slots = 'Top 10 slots',
+}
+
 export const initialState = {
     reports: {
+        activeReport: reports.impact,
         tuneUrlIDs: [] as number[],
     },
     authorization: {
@@ -22,20 +28,4 @@ export const API = {
     getTop10minuties: 'https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getTop10minuties',
 }
 
-/**
- * Cognito pool parameters
- */
-const addrTemplate = 'https://cognito-idp.{#0#}.amazonaws.com/{#1#}/.well-known/jwks.json';
-const poolID = 'us-east-2_2OlcpG9dA';
-const region = 'us-east-2';
-export const AWS_COGNITO_PUBLIC_KEY_LINK = addrTemplate.replace('{#0#}', region).replace('{#1#}', poolID);
-
-const domainName = 'tuneurl';
-const appClientID = '750qb0832o0u5as2vgki96lfgi';
-const redirectURI = 'https://dev7628.d722rv280a3p6.amplifyapp.com';
-//const redirectURI = 'http://localhost:3000';
-const cognitoAuthPathTemplate = 'https://{#0#}.auth.us-east-2.amazoncognito.com/login?response_type=token&client_id={#1#}&redirect_uri={#2#}';
-export const AWS_COGNITO_AUTH = cognitoAuthPathTemplate
-                                    .replace('{#0#}', domainName)
-                                    .replace('{#1#}', appClientID)
-                                    .replace('{#2#}', redirectURI);
+export const drawerWidth = 240;

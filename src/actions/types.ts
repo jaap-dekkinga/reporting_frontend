@@ -1,4 +1,4 @@
-import { initialState } from '../common/consts';
+import { initialState, reports } from '../common/consts';
 
 export enum actionTypes {
     // action types here
@@ -6,6 +6,7 @@ export enum actionTypes {
     storeTuneUrlIDs = "Storing received TuneURL IDs",
     refreshAuthData = "Refreshing authentication data",
     logout = "Logout",
+    setActiveReport = "Setting active report",
 }
 
 export type actionsT = {
@@ -13,4 +14,5 @@ export type actionsT = {
     // other action data types here
     tuneUrlIDs: number[],
     authData: typeof initialState.authorization,
+    activeReport: reports,
 }

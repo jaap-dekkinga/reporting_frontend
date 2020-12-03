@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
-import { initialState, AWS_COGNITO_AUTH } from '../../common/consts';
+import { initialState } from '../../common/consts';
+import * as config from '../../common/config';
 import { refreshAuthData } from '../../actions';
 import Auth from './authLib';
 import { ReactComponent as LoadSpinner } from '../../assets/imgs/load_spinner.svg';
@@ -34,6 +35,8 @@ export default (props: propsT) => {
 
     // checking Authentication state and Cognito id_token
     useEffect(() => {
+        if (!config.AUTH_REQUIRED) return;
+
         if (!Auth.checkCurrentAuthenticationState(authorization)) {
             Auth.checkIdToken()
                 .then(authData => {
@@ -41,19 +44,22 @@ export default (props: propsT) => {
                 })
                 .catch(err => {
                     //console.log(err);
-                    window.location.href = AWS_COGNITO_AUTH;
+                    window.location.href = config.AWS_COGNITO_AUTH;
                 });
         }
     }, []);
 
     return (
-        <>
-            {!authorization.email ?
-                <LoadSpinner className={classes.spinnerBox} />
-                : null}
-            {authorization.email ?
-                props.children
-                : null}
+        <>  {config.AUTH_REQUIRED ?
+                [
+                    !authorization.email ?
+                        <LoadSpinner className={classes.spinnerBox} />
+                        : null,
+                    authorization.email ?
+                        props.children
+                    : null
+                ]
+            : props.children}
         </>
     )
 }

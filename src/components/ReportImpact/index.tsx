@@ -21,7 +21,7 @@ import { initialState } from '../../common/consts';
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         bordered: {
-            //border: "solid green 1px",
+            border: "solid green 1px",
         },
         formControl: {
             margin: theme.spacing(1),
@@ -41,7 +41,15 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         graphBox: {
             marginTop: 100
-        }
+        },
+        menuItem: {
+            '&.Mui-selected': {
+                backgroundColor: 'rgba(178, 223, 219, 0.5)',
+            },
+            '&.Mui-selected:hover': {
+                backgroundColor: 'rgba(178, 223, 219, 0.5)',
+            },
+        },
     }),
 );
 
@@ -95,7 +103,7 @@ export default () => {
     // filling Select element
     const TuneUrlIdItemsList = tuneUrlIdList?.map(el => {
         return (
-            <MenuItem key={el} value={el}>
+            <MenuItem key={el} value={el} className={classes.menuItem}>
                 <Checkbox checked={tuneUrlID.includes(el)} />
                 <ListItemText primary={el} />
             </MenuItem>
@@ -141,46 +149,46 @@ export default () => {
     };
 
     return (
-        <Box mt={3}>
-            <Box my={3} fontSize="h3.fontSize" fontWeight="fontWeightBold" color="#464646">
+        <Box>
+            <Box mb={2} fontSize={32} fontWeight={600} color="#464646">
                 Report (Impact)
             </Box>
-            <Grid container spacing={2} alignItems="flex-end">
-                <Grid item md={6}>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <Grid container justify="space-between">
-                            <KeyboardDatePicker
-                                disableToolbar
-                                variant="inline"
-                                format="dd/MM/yyyy"
-                                margin="normal"
-                                //id="date-picker-inline"
-                                label="From:"
-                                value={dateFrom}
-                                onChange={setDateFrom}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                            />
-                            <KeyboardDatePicker
-                                disableToolbar
-                                variant="inline"
-                                format="dd/MM/yyyy"
-                                margin="normal"
-                                //id="date-picker-inline"
-                                label="To:"
-                                value={dateTo}
-                                onChange={setDateTo}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                            />
-                        </Grid>
-                    </MuiPickersUtilsProvider>
-                </Grid>
-                <Grid item md={5}>
+            <Grid container spacing={4} justify="flex-start" alignItems="flex-end">
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <Grid item>
+                        <KeyboardDatePicker
+                            disableToolbar
+                            variant="inline"
+                            format="dd/MM/yyyy"
+                            margin="normal"
+                            //id="date-picker-inline"
+                            label="From:"
+                            value={dateFrom}
+                            onChange={setDateFrom}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <KeyboardDatePicker
+                            disableToolbar
+                            variant="inline"
+                            format="dd/MM/yyyy"
+                            margin="normal"
+                            //id="date-picker-inline"
+                            label="To:"
+                            value={dateTo}
+                            onChange={setDateTo}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                        />
+                    </Grid>
+                </MuiPickersUtilsProvider>
+                <Grid item>
                     <FormControl className={classes.formControl}>
-                        <InputLabel >TuneURL ID:</InputLabel>
+                        <InputLabel>TuneURL ID:</InputLabel>
                         <Select
                             multiple
                             labelId="select-label"
@@ -195,16 +203,18 @@ export default () => {
                                     ))}
                                 </div>
                             )}
-                            //MenuProps={MenuProps}
+                        //MenuProps={MenuProps}
                         >
                             {TuneUrlIdItemsList}
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={1} container justify="flex-end">
+                <Grid item justify="flex-end">
                     <Box mb={1}>
-                        <Button variant="contained" color="primary" onClick={handleGraph}>
-                            Graph
+                        <Button variant="contained" size="large" color="primary" onClick={handleGraph}>
+                            <Box fontWeight={600}>
+                                Graph
+                            </Box>
                             {showSpinner ? <CircularProgress size={20} className={classes.spinner} /> : null}
                         </Button>
                     </Box>
@@ -218,14 +228,12 @@ export default () => {
                                 <Graph1 data={graph1Data} />
                             </Grid>
                             <Grid item md={4}>
-                                <Box pt={4}>
-                                    <Graph2 data={graph2Data} />
-                                </Box>
+                                <Graph2 data={graph2Data} />
                             </Grid>
                         </Grid>
                     </Box>
                     : null
             }
-        </Box>
+        </Box >
     )
 }

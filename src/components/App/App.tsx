@@ -1,14 +1,19 @@
-import React from 'react';
-import { Container, CssBaseline } from '@material-ui/core';
+import React, { useMemo } from 'react';
+import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
-import TopBar from '../TopBar';
+import Navigation from '../Navigation';
 import Authenticated from '../Authenticated';
 import Reports from '../Reports';
 
 function App() {
 
-  const theme = createMuiTheme({
+  const theme = useMemo(() => createMuiTheme({
+    typography: {
+      fontFamily: [
+        'Cairo'
+      ].join(',')
+    },
     palette: {
       //type: themeState,
       /*
@@ -17,23 +22,28 @@ function App() {
       },
       */
       primary: {
-        main: '#147c9c'
+        main: '#147c9c',
+        dark: '#0d5166',
       },
       secondary: {
-        main: '#0a4050'
-      }      
+        main: '#7e57c2' //400
+      },
+      action: {
+        //focusOpacity: 0.2,
+        //hoverOpacity: 0.2,
+        selected: '#26a69a',
+        hover: 'rgba(178, 223, 219, 0.3)',//'#b2dfdb', // 50
+      }
     }
-  });
+  }), []);
 
   return (
     <>
       <ThemeProvider theme={theme}>
+        <CssBaseline />
         <Authenticated>
-          <TopBar />
-          <Container>
-            <CssBaseline />
-            <Reports />
-          </Container>
+          <Navigation />
+          <Reports />
         </Authenticated>
       </ThemeProvider>
     </>

@@ -43,6 +43,7 @@ export default ({ data }: { data: dataGraph1T }) => {
     });
     
     const options = {
+        //maintainAspectRatio: false,
         elements: {
             line: {
                 tension: 0

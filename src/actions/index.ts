@@ -1,6 +1,6 @@
 import { Dispatch } from 'redux';
 import { actionTypes } from './types';
-import { API, initialState } from '../common/consts';
+import { API, initialState, reports } from '../common/consts';
 
 const types = actionTypes;
 
@@ -41,5 +41,12 @@ export function logout() {
     return {
         type: types.logout,
         authData: initialState.authorization
+    }
+}
+
+export function setActiveReport(report: reports) {
+    return {
+        type: types.setActiveReport,
+        activeReport: report,
     }
 }

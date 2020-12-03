@@ -46,6 +46,19 @@ const useStyles = makeStyles((theme: Theme) =>
         numberCell: {
             width: 50,
         },
+        menuItem: {
+            '&.Mui-selected': {
+                backgroundColor: 'rgba(178, 223, 219, 0.5)',
+            },
+            '&.Mui-selected:hover': {
+                backgroundColor: 'rgba(178, 223, 219, 0.5)',
+            },
+        },
+        tableHead: {
+            '& th': {
+                fontWeight: 700,
+            },
+        },
     })
 );
 
@@ -84,9 +97,11 @@ export default () => {
     const [reportData, setReportData] = useState<reportDataElementT[]>([]);
 
     // filling Select elements
-    const TuneUrlIdItemsList = tuneUrlIdList?.map(el => <MenuItem key={el} value={el}>{el}</MenuItem>) || null;
+    const TuneUrlIdItemsList = tuneUrlIdList
+        ?.map(el => <MenuItem key={el} value={el} className={classes.menuItem}>{el}</MenuItem>) || null;
+
     const InterestActionItemsList = ['heard', 'interested', 'acted', 'shared']
-        .map(el => <MenuItem key={el} value={el}>{el}</MenuItem>);
+        .map(el => <MenuItem key={el} value={el} className={classes.menuItem}>{el}</MenuItem>);
 
     const handleSetTuneUrlID = (event: React.ChangeEvent<{ value: unknown }>) => {
         setTuneUrlID(event.target.value as number);
@@ -105,7 +120,6 @@ export default () => {
         setRequireReportData(false);
 
         if (!(requireReportData && dateFrom && dateTo && interestAction)) return;
-        //if (tuneUrlID.length === 0) return;
 
         setShowSpinner(true);
 
@@ -135,43 +149,44 @@ export default () => {
 
     return (
         <>
-            <Box my={3} fontSize="h3.fontSize" fontWeight="fontWeightBold" color="#464646">
+            <Box mb={2} fontSize={32} fontWeight={600} color="#464646">
                 Report: Top 10 slots
             </Box>
-            <Grid container spacing={2} alignItems="flex-end">
-                <Grid item md={6}>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                        <Grid container justify="space-between">
-                            <KeyboardDatePicker
-                                disableToolbar
-                                variant="inline"
-                                format="dd/MM/yyyy"
-                                margin="normal"
-                                //id="date-picker-inline"
-                                label="From:"
-                                value={dateFrom}
-                                onChange={setDateFrom}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                            />
-                            <KeyboardDatePicker
-                                disableToolbar
-                                variant="inline"
-                                format="dd/MM/yyyy"
-                                margin="normal"
-                                //id="date-picker-inline"
-                                label="To:"
-                                value={dateTo}
-                                onChange={setDateTo}
-                                KeyboardButtonProps={{
-                                    'aria-label': 'change date',
-                                }}
-                            />
-                        </Grid>
-                    </MuiPickersUtilsProvider>
-                </Grid>
-                <Grid item md={2}>
+            <Grid container spacing={4} justify="flex-start" alignItems="flex-end">
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <Grid item>
+                        <KeyboardDatePicker
+                            disableToolbar
+                            variant="inline"
+                            format="dd/MM/yyyy"
+                            margin="normal"
+                            //id="date-picker-inline"
+                            label="From:"
+                            value={dateFrom}
+                            onChange={setDateFrom}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <KeyboardDatePicker
+                            disableToolbar
+                            variant="inline"
+                            format="dd/MM/yyyy"
+                            margin="normal"
+                            //id="date-picker-inline"
+                            label="To:"
+                            value={dateTo}
+                            onChange={setDateTo}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                        />
+                    </Grid>
+                </MuiPickersUtilsProvider>
+
+                <Grid item>
                     <FormControl className={classes.formControl}>
                         <InputLabel >TuneURL ID:</InputLabel>
                         <Select
@@ -184,7 +199,7 @@ export default () => {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item md={3}>
+                <Grid item>
                     <FormControl className={classes.formControl}>
                         <InputLabel >Interest action:</InputLabel>
                         <Select
@@ -197,43 +212,47 @@ export default () => {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item xs={1} container justify="flex-end">
+                <Grid item justify="flex-end">
                     <Box mb={1}>
-                        <Button variant="contained" color="primary" onClick={handleReport}>
-                            Report
+                        <Button variant="contained" size="large" color="primary" onClick={handleReport}>
+                            <Box fontWeight={600}>
+                                Report
+                            </Box>
                             {showSpinner ? <CircularProgress size={20} className={classes.spinner} /> : null}
                         </Button>
                     </Box>
                 </Grid>
             </Grid>
-            {reportData.length > 0 ?
-                <Box className={classes.reportBox}>
-                    <TableContainer component={Paper}>
-                        <Table className={classes.table} size="small" aria-label="a dense table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell className={classes.numberCell}>№</TableCell>
-                                    <TableCell align="right">Date</TableCell>
-                                    <TableCell align="right">Time</TableCell>
-                                    <TableCell align="right">Count</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {reportData.map((row, i) => (
-                                    <TableRow key={i}>
-                                        <TableCell component="th" scope="row">
-                                            {i + 1}
-                                        </TableCell>
-                                        <TableCell align="right">{format(new Date(row.date_time), 'yyy-MM-dd')}</TableCell>
-                                        <TableCell align="right">{format(new Date(row.date_time), 'HH:mm')}</TableCell>
-                                        <TableCell align="right">{row.count}</TableCell>
+            {
+                reportData.length > 0 ?
+                    <Box className={classes.reportBox}>
+                        <TableContainer component={Paper}>
+                            <Table className={classes.table} size="small" aria-label="a dense table">
+                                <TableHead className={classes.tableHead}>
+                                    <TableRow>
+                                        <TableCell className={classes.numberCell}>№</TableCell>
+                                        <TableCell align="right">Date</TableCell>
+                                        <TableCell align="right">Time</TableCell>
+                                        <TableCell align="right">Count</TableCell>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Box>
-                : null}
+                                </TableHead>
+                                <TableBody>
+                                    {reportData.map((row, i) => (
+                                        <TableRow key={i}>
+                                            <TableCell component="th" scope="row">
+                                                {i + 1}
+                                            </TableCell>
+                                            <TableCell align="right">{format(new Date(row.date_time), 'yyy-MM-dd')}</TableCell>
+                                            <TableCell align="right">{format(new Date(row.date_time), 'HH:mm')}</TableCell>
+                                            <TableCell align="right">{row.count}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Box>
+                    : null
+            }
         </>
     )
 }

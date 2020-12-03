@@ -1,6 +1,7 @@
 import jwkToPem from 'jwk-to-pem';
 import jwt from 'jsonwebtoken';
-import { initialState, AWS_COGNITO_PUBLIC_KEY_LINK } from '../../common/consts';
+import { initialState } from '../../common/consts';
+import { AWS_COGNITO_PUBLIC_KEY_LINK } from '../../common/config';
 
 type authT = typeof initialState.authorization;
 interface tokenPayloadT extends authT {
