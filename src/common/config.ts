@@ -2,7 +2,7 @@ const devMode = process.env.NODE_ENV === 'development' ? true : false;
 /**
  * Is Authentication required
  */
-export const AUTH_REQUIRED = devMode ? false : true;
+export const AUTH_REQUIRED = true;//devMode ? false : true;
 
 /**
  * Cognito pool parameters

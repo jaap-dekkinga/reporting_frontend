@@ -58,6 +58,8 @@ export default class Authentication {
                 const pem = jwkToPem(keys[i]);
                 const tokenPayload: tokenPayloadT = jwt.verify(idToken, pem, { algorithm: [tokenObj1.alg] } as jwt.VerifyOptions) as tokenPayloadT;
 
+                console.log(tokenPayload);
+                
                 return {
                     email: tokenPayload.email,
                     name: tokenPayload.name,
