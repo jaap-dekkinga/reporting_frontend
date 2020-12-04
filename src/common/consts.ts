@@ -12,6 +12,7 @@ export const initialState = {
         email: null as null | string,
         name: null as null | string,
         expired: null as null | number,
+        uid: null as null | string,
     }
 }
 

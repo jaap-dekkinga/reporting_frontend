@@ -11,10 +11,10 @@ function storeTuneUrlIDs(tuneUrlIDs: number[]) {
     }
 }
 
-export function getTuneUrlIDs() {
+export function getTuneUrlIDs(uid: typeof initialState.authorization.uid) {
     return async (dispatch: Dispatch) => {
         try {
-            const res = await fetch(API.getTuneUrlIDs, {
+            const res = await fetch(API.getTuneUrlIDs + '?' + new URLSearchParams({ uid: uid as string }), {
                 method: 'GET',
                 mode: 'cors',
             });

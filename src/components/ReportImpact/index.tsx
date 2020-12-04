@@ -209,7 +209,7 @@ export default () => {
                         </Select>
                     </FormControl>
                 </Grid>
-                <Grid item justify="flex-end">
+                <Grid item>
                     <Box mb={1}>
                         <Button variant="contained" size="large" color="primary" onClick={handleGraph}>
                             <Box fontWeight={600}>

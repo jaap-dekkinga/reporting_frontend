@@ -6,6 +6,7 @@ import { AWS_COGNITO_PUBLIC_KEY_LINK } from '../../common/config';
 type authT = typeof initialState.authorization;
 interface tokenPayloadT extends authT {
     exp: number;
+    sub: string;
 };
 
 export default class Authentication {
@@ -58,12 +59,13 @@ export default class Authentication {
                 const pem = jwkToPem(keys[i]);
                 const tokenPayload: tokenPayloadT = jwt.verify(idToken, pem, { algorithm: [tokenObj1.alg] } as jwt.VerifyOptions) as tokenPayloadT;
 
-                console.log(tokenPayload);
+                //console.log(tokenPayload);
                 
                 return {
                     email: tokenPayload.email,
                     name: tokenPayload.name,
-                    expired: tokenPayload.exp
+                    expired: tokenPayload.exp,
+                    uid: tokenPayload.sub,
                 };
             }
         }

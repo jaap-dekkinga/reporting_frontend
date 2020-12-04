@@ -24,9 +24,10 @@ export default () => {
     const classes = useStyles();
     const dispatch = useDispatch();
     const activeReport = useSelector((state: typeof initialState) => state.reports.activeReport);
+    const uid = useSelector((state: typeof initialState) => state.authorization.uid);
 
     useEffect(() => {
-        dispatch(getTuneUrlIDs());
+        dispatch(getTuneUrlIDs(uid));
     }, []);
 
     let showComponent;

@@ -2,9 +2,9 @@ import React, { useMemo } from 'react';
 import { CssBaseline } from '@material-ui/core';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
-import Navigation from '../Navigation';
-import Authenticated from '../Authenticated';
-import Reports from '../Reports';
+import Navigation from './Navigation';
+import Authenticated from './Authenticated';
+import Reports from './Reports';
 
 function App() {
 
