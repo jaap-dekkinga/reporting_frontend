@@ -1,32 +1,36 @@
 export enum reports {
-    impact = 'Impact graph',
-    top10Slots = 'Top 10 slots',
+  impact = "Impact graph",
+  top10Slots = "Top 10 slots",
+  fingerprints = "Fingerprints",
 }
 
 export const initialState = {
-    reports: {
-        activeReport: reports.impact,
-        tuneUrlIDs: [] as number[],
-    },
-    authorization: {
-        email: null as null | string,
-        name: null as null | string,
-        expired: null as null | number,
-        uid: null as null | string,
-    }
-}
+  reports: {
+    activeReport: reports.impact,
+    tuneUrlIDs: [] as number[],
+  },
+  authorization: {
+    email: null as null | string,
+    name: null as null | string,
+    expired: null as null | number,
+    uid: null as null | string,
+  },
+};
 
 export enum interestActions {
-    'heard' = 'heard',
-    'interested' = 'interested',
-    'acted' = 'acted',
-    'shared' = 'shared'
+  "heard" = "heard",
+  "interested" = "interested",
+  "acted" = "acted",
+  "shared" = "shared",
 }
 
 export const API = {
-    getTuneUrlIDs: 'https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getTuneURL_IDs',
-    getGraphData: 'https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getGraphData',
-    getTop10minuties: 'https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getTop10minuties',
-}
+  getTuneUrlIDs:
+    "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getTuneURL_IDs",
+  getGraphData:
+    "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getGraphData",
+  getTop10minuties:
+    "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getTop10minuties",
+};
 
 export const drawerWidth = 240;
