@@ -7,9 +7,17 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import { Button, Container, Grid, IconButton } from "@material-ui/core";
+import { Button, Grid, IconButton, MenuItem } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+
+// import Button from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -101,9 +109,7 @@ export default () => {
   return (
     <Grid container xs={12} direction="row-reverse">
       <Grid item xs={1} style={{ padding: 10 }}>
-        <Button variant="contained" color="primary">
-          Add
-        </Button>
+        <FormDialog />
       </Grid>
       <Grid item xs={12}>
         <TableContainer component={Paper}>
@@ -161,3 +167,89 @@ export default () => {
     </Grid>
   );
 };
+
+/**
+ * Dialog to show the form to create fingerprint
+ */
+
+export function FormDialog() {
+  const [open, setOpen] = React.useState(false);
+  const [type, setType] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleChange = () => {};
+
+  return (
+    <div>
+      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+        New
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">Fingerprint</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Name"
+            type="text"
+            fullWidth
+            required
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="description"
+            label="Description"
+            type="text"
+            fullWidth
+            required
+          />
+          <TextField
+            id="type"
+            select
+            label="Type"
+            value={type}
+            onChange={handleChange}
+            helperText="Please select fingerprint type."
+            fullWidth
+            required
+          >
+            {["Type 1", "Type 2", "Type 3", "Type 4"].map((option) => (
+              <MenuItem key={option} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="info"
+            label="Info"
+            type="text"
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleClose} color="primary">
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  );
+}
