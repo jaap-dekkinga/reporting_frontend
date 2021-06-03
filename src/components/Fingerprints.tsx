@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -107,11 +107,11 @@ export default () => {
   const classes = useStyles();
 
   return (
-    <Grid container xs={12} direction="row-reverse">
+    <Grid container direction="row-reverse">
       <Grid item xs={1} style={{ padding: 10 }}>
         <FormDialog />
       </Grid>
-      <Grid item xs={12}>
+      <Grid item>
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="customized table">
             <TableHead>
@@ -174,7 +174,7 @@ export default () => {
 
 export function FormDialog() {
   const [open, setOpen] = React.useState(false);
-  const [type, setType] = React.useState(false);
+  const [type, setType] = React.useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -184,7 +184,13 @@ export function FormDialog() {
     setOpen(false);
   };
 
-  const handleChange = () => {};
+  const handleChange = (e: ChangeEvent) => {
+    setType(e.target.nodeValue || "");
+  };
+
+  const handleAdd = () => {
+    console.info("Add fingerprint successfull.");
+  };
 
   return (
     <div>
@@ -245,7 +251,7 @@ export function FormDialog() {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleAdd} color="primary">
             Add
           </Button>
         </DialogActions>
