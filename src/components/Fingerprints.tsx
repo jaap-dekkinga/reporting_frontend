@@ -18,6 +18,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { render } from "@testing-library/react";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -43,10 +44,18 @@ function createData(
   description: string,
   type: string,
   info: string,
-  dateCreated: string,
-  dateUpdated: string
+  createdAt: string,
+  updatedAt: string
 ) {
-  return { id, name, description, type, info, dateCreated, dateUpdated };
+  return {
+    id,
+    name,
+    description,
+    type,
+    info,
+    createdAt,
+    updatedAt,
+  } as FingerprintModel;
 }
 
 const rows = [
@@ -103,159 +112,241 @@ const useStyles = makeStyles({
   },
 });
 
-export default () => {
-  const classes = useStyles();
+export default class Fingerprints extends React.Component {
+  classes = useStyles();
 
-  return (
-    <Grid container direction="row-reverse">
-      <Grid item xs={1} style={{ padding: 10 }}>
-        <FormDialog />
-      </Grid>
-      <Grid item>
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>ID</StyledTableCell>
-                <StyledTableCell>Name</StyledTableCell>
-                <StyledTableCell>Description</StyledTableCell>
-                <StyledTableCell>Type</StyledTableCell>
-                <StyledTableCell>Info</StyledTableCell>
-                <StyledTableCell>Created On</StyledTableCell>
-                <StyledTableCell>Update On</StyledTableCell>
-                <StyledTableCell>Action</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <StyledTableRow key={row.id}>
-                  <StyledTableCell component="th" scope="row">
-                    {row.id}
-                  </StyledTableCell>
-                  <StyledTableCell>{row.name}</StyledTableCell>
-                  <StyledTableCell align="right">
-                    {row.description}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">{row.type}</StyledTableCell>
-                  <StyledTableCell align="right">{row.info}</StyledTableCell>
-                  <StyledTableCell align="right">
-                    {row.dateCreated}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    {row.dateUpdated}
-                  </StyledTableCell>
-                  <StyledTableCell>
-                    <Grid container>
-                      <Grid item xs={6}>
-                        <IconButton aria-label="edit" color="secondary">
-                          <EditIcon />
-                        </IconButton>
+  render() {
+    return (
+      <Grid container direction="row-reverse">
+        <Grid item xs={1} style={{ padding: 10 }}>
+          <FormDialog />
+        </Grid>
+        <Grid item>
+          <TableContainer component={Paper}>
+            <Table className={this.classes.table} aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>ID</StyledTableCell>
+                  <StyledTableCell>Name</StyledTableCell>
+                  <StyledTableCell>Description</StyledTableCell>
+                  <StyledTableCell>Type</StyledTableCell>
+                  <StyledTableCell>Info</StyledTableCell>
+                  <StyledTableCell>Created On</StyledTableCell>
+                  <StyledTableCell>Update On</StyledTableCell>
+                  <StyledTableCell>Action</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row) => (
+                  <StyledTableRow key={row.id}>
+                    <StyledTableCell component="th" scope="row">
+                      {row.id}
+                    </StyledTableCell>
+                    <StyledTableCell>{row.name}</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {row.description}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">{row.type}</StyledTableCell>
+                    <StyledTableCell align="right">{row.info}</StyledTableCell>
+                    <StyledTableCell align="right">
+                      {row.createdAt}
+                    </StyledTableCell>
+                    <StyledTableCell align="right">
+                      {row.updatedAt}
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <Grid container>
+                        <Grid item xs={6}>
+                          <IconButton aria-label="edit" color="secondary">
+                            <EditIcon />
+                          </IconButton>
+                        </Grid>
+                        <Grid item xs={6}>
+                          <IconButton aria-label="delete" color="secondary">
+                            <DeleteIcon />
+                          </IconButton>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={6}>
-                        <IconButton aria-label="delete" color="secondary">
-                          <DeleteIcon />
-                        </IconButton>
-                      </Grid>
-                    </Grid>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                    </StyledTableCell>
+                    <FormDialog model={row} />
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
       </Grid>
-    </Grid>
-  );
-};
+    );
+  }
+}
 
 /**
  * Dialog to show the form to create fingerprint
  */
 
-export function FormDialog() {
-  const [open, setOpen] = React.useState(false);
-  const [type, setType] = React.useState("");
+interface FingerprintModel {
+  id: number;
+  name: string;
+  description: string;
+  type: string;
+  info: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
-  const handleClickOpen = () => {
-    setOpen(true);
+type FingerprintProps = {
+  model?: FingerprintModel;
+};
+
+type FingerprintState = {
+  types: string[];
+  fingerprint: FingerprintModel;
+  isDialogOpen: boolean;
+};
+
+export class FormDialog extends React.Component<
+  FingerprintProps,
+  FingerprintState
+> {
+  typesURL = "https://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/type";
+
+  state: FingerprintState = {
+    types: [],
+    fingerprint: {
+      id: "",
+      name: "",
+      type: "",
+      description: "",
+      createdAt: "",
+      updatedAt: "",
+    },
+    isDialogOpen: false,
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  handleClickOpen = () => {
+    this.setState({
+      ...this.state,
+      isDialogOpen: true,
+    });
   };
 
-  const handleChange = (e: ChangeEvent) => {
-    setType(e.target.nodeValue || "");
+  handleClose = () => {
+    this.setState({
+      ...this.state,
+      isDialogOpen: false,
+    });
   };
 
-  const handleAdd = () => {
+  handleChange = (e: ChangeEvent) => {
+    // setType(e.target.nodeValue || "");
+    this.setState({
+      ...this.state,
+      fingerprint: {
+        ...this.state.fingerprint,
+        type: e.target.nodeValue || "",
+      },
+    });
+  };
+
+  handleAdd = () => {
     console.info("Add fingerprint successfull.");
   };
 
-  return (
-    <div>
-      <Button variant="contained" color="primary" onClick={handleClickOpen}>
-        New
-      </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">Fingerprint</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Name"
-            type="text"
-            fullWidth
-            required
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="description"
-            label="Description"
-            type="text"
-            fullWidth
-            required
-          />
-          <TextField
-            id="type"
-            select
-            label="Type"
-            value={type}
-            onChange={handleChange}
-            helperText="Please select fingerprint type."
-            fullWidth
-            required
-          >
-            {["Type 1", "Type 2", "Type 3", "Type 4"].map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="info"
-            label="Info"
-            type="text"
-            fullWidth
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleAdd} color="primary">
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  );
+  loadTypes = () => {
+    // setShowSpinner(true);
+
+    fetch(this.typesURL, {
+      method: "GET",
+      mode: "cors",
+    })
+      .then((res) => {
+        // setShowSpinner(false);
+        return res.json();
+      })
+      .then((data) => {
+        if (data.status !== "OK") {
+          console.log("Can't receive report data: ", data.message);
+          return;
+        }
+
+        // setReportData(data.data);
+        this.setState({
+          ...this.state,
+          types: data.data as string[],
+        });
+      });
+  };
+
+  render() {
+    return (
+      <div>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={this.handleClickOpen}
+        >
+          New
+        </Button>
+        <Dialog
+          open={this.state.isDialogOpen}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Fingerprint</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Name"
+              type="text"
+              fullWidth
+              required
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              id="description"
+              label="Description"
+              type="text"
+              fullWidth
+              required
+            />
+            <TextField
+              id="type"
+              select
+              label="Type"
+              value={this.state.type}
+              onChange={this.handleChange}
+              helperText="Please select fingerprint type."
+              fullWidth
+              required
+            >
+              {this.state.types.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="info"
+              label="Info"
+              type="text"
+              fullWidth
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleClose} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={this.handleAdd} color="primary">
+              Add
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    );
+  }
 }
