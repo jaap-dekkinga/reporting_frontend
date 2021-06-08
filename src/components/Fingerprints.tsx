@@ -11,15 +11,19 @@ import { Button, Grid, IconButton, MenuItem } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 
-// import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { render } from "@testing-library/react";
 
+import {
+  FingerprintModel,
+  FingerprintProps,
+  FingerprintState,
+} from "../types/FingerprintModel";
+import { getFingerprints } from "../services/Fingerprint.service";
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.common.black,
@@ -38,73 +42,73 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow);
 
-function createData(
-  id: number,
-  name: string,
-  description: string,
-  type: string,
-  info: string,
-  createdAt: string,
-  updatedAt: string
-) {
-  return {
-    id,
-    name,
-    description,
-    type,
-    info,
-    createdAt,
-    updatedAt,
-  } as FingerprintModel;
-}
+// function createData(
+//   id: number,
+//   name: string,
+//   description: string,
+//   type: string,
+//   info: string,
+//   createdAt: string,
+//   updatedAt: string
+// ) {
+//   return {
+//     id,
+//     name,
+//     description,
+//     type,
+//     info,
+//     createdAt,
+//     updatedAt,
+//   } as FingerprintModel;
+// }
 
-const rows = [
-  createData(
-    1,
-    "Fingerprint1",
-    "This is created from a sample mp3 file.",
-    "test",
-    "expedite test finger print",
-    "02/06/21",
-    "02/06/21"
-  ),
-  createData(
-    2,
-    "Fingerprint2",
-    "This is created from a sample mp3 file.",
-    "test",
-    "expedite test finger print",
-    "02/06/21",
-    "02/06/21"
-  ),
-  createData(
-    3,
-    "Fingerprint3",
-    "This is created from a sample mp3 file.",
-    "test",
-    "expedite test finger print",
-    "02/06/21",
-    "02/06/21"
-  ),
-  createData(
-    4,
-    "Fingerprint4",
-    "This is created from a sample mp3 file.",
-    "test",
-    "expedite test finger print",
-    "02/06/21",
-    "02/06/21"
-  ),
-  createData(
-    5,
-    "Fingerprint5",
-    "This is created from a sample mp3 file.",
-    "test",
-    "expedite test finger print",
-    "02/06/21",
-    "02/06/21"
-  ),
-];
+// const rows = [
+//   createData(
+//     1,
+//     "Fingerprint1",
+//     "This is created from a sample mp3 file.",
+//     "test",
+//     "expedite test finger print",
+//     "02/06/21",
+//     "02/06/21"
+//   ),
+//   createData(
+//     2,
+//     "Fingerprint2",
+//     "This is created from a sample mp3 file.",
+//     "test",
+//     "expedite test finger print",
+//     "02/06/21",
+//     "02/06/21"
+//   ),
+//   createData(
+//     3,
+//     "Fingerprint3",
+//     "This is created from a sample mp3 file.",
+//     "test",
+//     "expedite test finger print",
+//     "02/06/21",
+//     "02/06/21"
+//   ),
+//   createData(
+//     4,
+//     "Fingerprint4",
+//     "This is created from a sample mp3 file.",
+//     "test",
+//     "expedite test finger print",
+//     "02/06/21",
+//     "02/06/21"
+//   ),
+//   createData(
+//     5,
+//     "Fingerprint5",
+//     "This is created from a sample mp3 file.",
+//     "test",
+//     "expedite test finger print",
+//     "02/06/21",
+//     "02/06/21"
+//   ),
+// ];
 
 const useStyles = makeStyles({
   table: {
@@ -112,8 +116,23 @@ const useStyles = makeStyles({
   },
 });
 
-export default class Fingerprints extends React.Component {
+type FingerprintListState = {
+  fingerprints: FingerprintModel[];
+};
+
+export default class Fingerprints extends React.Component<
+  FingerprintProps,
+  FingerprintListState
+> {
   classes = useStyles();
+
+  componentDidMount() {
+    let fingerprints = getFingerprints();
+
+    fingerprints.then((data) => {
+      this.setState({ fingerprints: data });
+    });
+  }
 
   render() {
     return (
@@ -137,40 +156,50 @@ export default class Fingerprints extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
-                  <StyledTableRow key={row.id}>
-                    <StyledTableCell component="th" scope="row">
-                      {row.id}
-                    </StyledTableCell>
-                    <StyledTableCell>{row.name}</StyledTableCell>
-                    <StyledTableCell align="right">
-                      {row.description}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">{row.type}</StyledTableCell>
-                    <StyledTableCell align="right">{row.info}</StyledTableCell>
-                    <StyledTableCell align="right">
-                      {row.createdAt}
-                    </StyledTableCell>
-                    <StyledTableCell align="right">
-                      {row.updatedAt}
-                    </StyledTableCell>
-                    <StyledTableCell>
-                      <Grid container>
-                        <Grid item xs={6}>
-                          <IconButton aria-label="edit" color="secondary">
-                            <EditIcon />
-                          </IconButton>
+                {this.state.fingerprints.length > 0 ? (
+                  this.state.fingerprints.map((row) => (
+                    <StyledTableRow key={row.id}>
+                      <StyledTableCell component="th" scope="row">
+                        {row.id}
+                      </StyledTableCell>
+                      <StyledTableCell>{row.name}</StyledTableCell>
+                      <StyledTableCell align="right">
+                        {row.description}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {row.type}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {row.info}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {row.createdAt}
+                      </StyledTableCell>
+                      <StyledTableCell align="right">
+                        {row.updatedAt}
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        <Grid container>
+                          <Grid item xs={6}>
+                            <IconButton aria-label="edit" color="secondary">
+                              <EditIcon />
+                            </IconButton>
+                          </Grid>
+                          <Grid item xs={6}>
+                            <IconButton aria-label="delete" color="secondary">
+                              <DeleteIcon />
+                            </IconButton>
+                          </Grid>
                         </Grid>
-                        <Grid item xs={6}>
-                          <IconButton aria-label="delete" color="secondary">
-                            <DeleteIcon />
-                          </IconButton>
-                        </Grid>
-                      </Grid>
-                    </StyledTableCell>
-                    <FormDialog model={row} />
-                  </StyledTableRow>
-                ))}
+                      </StyledTableCell>
+                      <FormDialog model={row} />
+                    </StyledTableRow>
+                  ))
+                ) : (
+                  <div>
+                    <h1>Loading....</h1>
+                  </div>
+                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -183,37 +212,14 @@ export default class Fingerprints extends React.Component {
 /**
  * Dialog to show the form to create fingerprint
  */
-
-interface FingerprintModel {
-  id: number;
-  name: string;
-  description: string;
-  type: string;
-  info: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-type FingerprintProps = {
-  model?: FingerprintModel;
-};
-
-type FingerprintState = {
-  types: string[];
-  fingerprint: FingerprintModel;
-  isDialogOpen: boolean;
-};
-
 export class FormDialog extends React.Component<
   FingerprintProps,
   FingerprintState
 > {
-  typesURL = "https://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/type";
-
   state: FingerprintState = {
     types: [],
     fingerprint: {
-      id: "",
+      id: 0,
       name: "",
       type: "",
       description: "",
@@ -252,30 +258,7 @@ export class FormDialog extends React.Component<
     console.info("Add fingerprint successfull.");
   };
 
-  loadTypes = () => {
-    // setShowSpinner(true);
-
-    fetch(this.typesURL, {
-      method: "GET",
-      mode: "cors",
-    })
-      .then((res) => {
-        // setShowSpinner(false);
-        return res.json();
-      })
-      .then((data) => {
-        if (data.status !== "OK") {
-          console.log("Can't receive report data: ", data.message);
-          return;
-        }
-
-        // setReportData(data.data);
-        this.setState({
-          ...this.state,
-          types: data.data as string[],
-        });
-      });
-  };
+  loadTypes = () => {};
 
   render() {
     return (
