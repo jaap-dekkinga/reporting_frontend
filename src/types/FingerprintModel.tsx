@@ -29,4 +29,5 @@ export type FingerprintState = {
   types: FingerprintType[];
   fingerprint: FingerprintModel;
   isDialogOpen: boolean;
+  showSpinner: boolean;
 };

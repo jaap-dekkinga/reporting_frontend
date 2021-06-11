@@ -1,6 +1,12 @@
 import React, { ChangeEvent } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import { Button, MenuItem, Grid, TextField } from "@material-ui/core";
+import {
+  Button,
+  MenuItem,
+  Grid,
+  TextField,
+  CircularProgress,
+} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -41,6 +47,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       fileNameOrUrl: "",
     },
     isDialogOpen: false,
+    showSpinner: true,
   };
 
   // constructor(props: FingerprintProps) {
@@ -125,7 +132,10 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
 
   handleAdd = () => {
     console.log(this.state.fingerprint);
-    console.info("Add fingerprint successfull.");
+    this.setState({
+      ...this.state,
+      showSpinner: true,
+    });
     if (this.props.model) {
       if (this.isFingerprintChanged) {
         let res = updateFingerprint(this.state.fingerprint);
@@ -134,16 +144,23 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             this.setState({
               ...this.state,
               isDialogOpen: false,
+              showSpinner: false,
             });
           })
           .catch((error) => {
             // show error alert
+            this.setState({
+              ...this.state,
+              isDialogOpen: false,
+              showSpinner: false,
+            });
             alert(error.message);
           });
       } else {
         this.setState({
           ...this.state,
           isDialogOpen: false,
+          showSpinner: false,
         });
       }
     } else {
@@ -153,16 +170,26 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
           this.setState({
             ...this.state,
             isDialogOpen: false,
+            showSpinner: false,
           });
         })
         .catch((error) => {
           // show error alert
+          this.setState({
+            ...this.state,
+            isDialogOpen: false,
+            showSpinner: false,
+          });
           alert(error.message);
         });
     }
   };
 
   componentDidMount() {
+    this.setState({
+      ...this.state,
+      showSpinner: true,
+    });
     let result = getFingerprintTypes();
 
     result
@@ -172,9 +199,16 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
         this.setState({
           ...this.state,
           types: data,
+          showSpinner: false,
         });
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => {
+        this.setState({
+          ...this.state,
+          showSpinner: false,
+        });
+        alert(error.message);
+      });
 
     // set state if model in props available.
     if (this.props.isEditMode && this.props.model) {
@@ -186,7 +220,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   }
 
   render() {
-    let { title, children } = this.props;
+    let { title, children, classes } = this.props;
     console.log(title, children !== undefined);
     return (
       <>
@@ -212,98 +246,104 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Fingerprint</DialogTitle>
-          <DialogContent>
-            <form onSubmit={() => {}}>
-              <Grid container direction="column">
-                <Grid item>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="fingerprintName"
-                    name="fingerprintName"
-                    label="Fingerprint File"
-                    type="file"
-                    value={this.state.fingerprint.mp3data?.type ?? ""}
-                    fullWidth
-                    required
-                    onChange={this.handleFileChange}
-                  />
-                </Grid>
-                <Grid item>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    name="name"
-                    label="Name"
-                    type="text"
-                    value={this.state.fingerprint.name}
-                    fullWidth
-                    required
-                    onChange={this.handleChange}
-                  />
-                </Grid>
-                <Grid item>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="description"
-                    name="description"
-                    label="Description"
-                    type="text"
-                    value={this.state.fingerprint.description}
-                    fullWidth
-                    required
-                    onChange={this.handleChange}
-                  />
-                </Grid>
-                <Grid item>
-                  <TextField
-                    id="type"
-                    name="type"
-                    select
-                    label="Type"
-                    value={this.state.fingerprint.type}
-                    onChange={this.handleChange}
-                    helperText="Please select fingerprint type."
-                    fullWidth
-                    required
-                  >
-                    {this.state.types &&
-                      this.state.types.length > 0 &&
-                      this.state.types.map((option) => (
-                        <MenuItem key={option.id} value={option.type}>
-                          {option.type}
-                        </MenuItem>
-                      ))}
-                  </TextField>
-                </Grid>
-                <Grid item>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    id="info"
-                    name="info"
-                    label="Info"
-                    type="text"
-                    value={this.state.fingerprint.info}
-                    fullWidth
-                    required
-                    onChange={this.handleChange}
-                  />
-                </Grid>
-              </Grid>
-            </form>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.handleAdd} color="primary">
-              Add
-            </Button>
-          </DialogActions>
+          {this.state.showSpinner ? (
+            <CircularProgress size={20} className={classes.spinner} />
+          ) : (
+            <>
+              <DialogTitle id="form-dialog-title">Fingerprint</DialogTitle>
+              <DialogContent>
+                <form onSubmit={() => {}}>
+                  <Grid container direction="column">
+                    <Grid item>
+                      <TextField
+                        autoFocus
+                        margin="dense"
+                        id="fingerprintName"
+                        name="fingerprintName"
+                        label="Fingerprint File"
+                        type="file"
+                        value={this.state.fingerprint.mp3data?.type ?? ""}
+                        fullWidth
+                        required
+                        onChange={this.handleFileChange}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        name="name"
+                        label="Name"
+                        type="text"
+                        value={this.state.fingerprint.name}
+                        fullWidth
+                        required
+                        onChange={this.handleChange}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <TextField
+                        autoFocus
+                        margin="dense"
+                        id="description"
+                        name="description"
+                        label="Description"
+                        type="text"
+                        value={this.state.fingerprint.description}
+                        fullWidth
+                        required
+                        onChange={this.handleChange}
+                      />
+                    </Grid>
+                    <Grid item>
+                      <TextField
+                        id="type"
+                        name="type"
+                        select
+                        label="Type"
+                        value={this.state.fingerprint.type}
+                        onChange={this.handleChange}
+                        helperText="Please select fingerprint type."
+                        fullWidth
+                        required
+                      >
+                        {this.state.types &&
+                          this.state.types.length > 0 &&
+                          this.state.types.map((option) => (
+                            <MenuItem key={option.id} value={option.type}>
+                              {option.type}
+                            </MenuItem>
+                          ))}
+                      </TextField>
+                    </Grid>
+                    <Grid item>
+                      <TextField
+                        autoFocus
+                        margin="dense"
+                        id="info"
+                        name="info"
+                        label="Info"
+                        type="text"
+                        value={this.state.fingerprint.info}
+                        fullWidth
+                        required
+                        onChange={this.handleChange}
+                      />
+                    </Grid>
+                  </Grid>
+                </form>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={this.handleClose} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={this.handleAdd} color="primary">
+                  Add
+                </Button>
+              </DialogActions>
+            </>
+          )}
         </Dialog>
       </>
     );
