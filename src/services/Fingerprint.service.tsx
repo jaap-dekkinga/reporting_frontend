@@ -1,5 +1,5 @@
 import { promises } from "dns";
-import { FingerprintModel } from "../types/FingerprintModel";
+import { FingerprintModel, FingerprintType } from "../types/FingerprintModel";
 // POST -
 const createFingerprintURL =
   "https://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/create-fingerprint";
@@ -14,29 +14,25 @@ const deleteFingerprintURL =
 
 // GET -
 const getFingerprintsURL =
-  "https://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/get-fingerprint?start=1&limit=10";
+  "https://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/get-fingerprint?limit=10&offset=1";
 
 // GET -
 const typesURL =
   "https://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/type";
 
 /// returns the type of fingerprints
-export const getFingerprintTypes = () => {
-  fetch(typesURL, {
+export const getFingerprintTypes = async (): Promise<any> => {
+  let response = await fetch(typesURL, {
     method: "GET",
     mode: "cors",
-  })
-    .then((res) => {
-      // setShowSpinner(false);
-      return res.json();
-    })
-    .then((data) => {
-      if (data.status !== "OK") {
-        console.log("Can't receive report data: ", data.message);
-        return;
-      }
-      return data.data as string[];
-    });
+  }).then(handleErrors);
+
+  let result = await response.json().then((data) => {
+    return data;
+  });
+
+  return result;
+  // }
 };
 
 //create
@@ -46,23 +42,35 @@ export const createFingerprint = async (
   // setShowSpinner(true);
   const formData = new FormData();
 
-  formData.append("mp3file", data.id.toString());
+  if (undefined !== data.mp3data || null !== data.mp3data) {
+    formData.append("mp3file", data.mp3data!);
+  }
   formData.append("name", data.name);
   formData.append("description", data.description);
   formData.append("type", data.type);
   formData.append("info", data.info);
+  // formData.append("id", data.id.toString());
   // formData.append(name, data.url);
 
-  let response = await fetch(updateFingerprintURL, {
+  let response = await fetch(createFingerprintURL, {
     method: "POST",
     mode: "cors",
     body: formData,
-  });
+  }).then(handleErrors);
+
   let result = await response.json().then((data) => {
+    console.log(data);
     return data;
   });
 
   return result;
+};
+
+const handleErrors = (response: Response) => {
+  if (!response.ok) {
+    throw Error("Some error occured");
+  }
+  return response;
 };
 
 //update
@@ -71,11 +79,14 @@ export const updateFingerprint = async (
 ): Promise<any> => {
   const formData = new FormData();
 
-  formData.append("mp3file", data.id.toString());
+  if (undefined !== data.mp3data || null !== data.mp3data) {
+    formData.append("mp3file", data.mp3data!);
+  }
   formData.append("name", data.name);
   formData.append("description", data.description);
   formData.append("type", data.type);
   formData.append("info", data.info);
+  formData.append("id", data.id.toString());
   // formData.append(name, data.url);
 
   let response = await fetch(updateFingerprintURL, {
@@ -96,7 +107,7 @@ export const deleteFingerprint = async (id: string): Promise<any> => {
   let response = await fetch(deleteFingerprintURL, {
     method: "DELETE",
     mode: "cors",
-  });
+  }).then(handleErrors);
   let result = await response.json().then((data) => {
     return data;
   });
@@ -106,10 +117,11 @@ export const deleteFingerprint = async (id: string): Promise<any> => {
 
 //list
 export const getFingerprints = async (): Promise<FingerprintModel[]> => {
+  console.log("Get Fingerprint");
   let response = await fetch(getFingerprintsURL, {
     method: "GET",
     mode: "cors",
-  });
+  }).then(handleErrors);
   let result = await response.json().then((data) => {
     return data.data;
   });

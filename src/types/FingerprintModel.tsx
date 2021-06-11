@@ -1,7 +1,10 @@
+import { WithStyles } from "@material-ui/core/styles";
 import React from "react";
 
 export interface FingerprintModel {
   id: number;
+  mp3data?: Blob;
+  fileNameOrUrl: string;
   name: string;
   description: string;
   type: string;
@@ -9,13 +12,21 @@ export interface FingerprintModel {
   createdAt: string;
   updatedAt: string;
 }
-
-export type FingerprintProps = {
+export interface FingerprintProps extends WithStyles {
   model?: FingerprintModel;
-};
+  isEditMode?: boolean;
+  title?: string;
+  component?: React.Component;
+}
+
+export interface FingerprintType {
+  id: string;
+  type: string;
+  status: string;
+}
 
 export type FingerprintState = {
-  types: string[];
+  types: FingerprintType[];
   fingerprint: FingerprintModel;
   isDialogOpen: boolean;
 };
