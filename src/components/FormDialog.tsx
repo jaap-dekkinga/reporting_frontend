@@ -44,7 +44,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       info: "",
       createdAt: "",
       updatedAt: "",
-      fileNameOrUrl: "",
+      fileNameOrUrl: "sample.mp3",
     },
     isDialogOpen: false,
     showSpinner: true,
@@ -262,7 +262,6 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                         name="fingerprintName"
                         label="Fingerprint File"
                         type="file"
-                        value={this.state.fingerprint.mp3data?.type ?? ""}
                         fullWidth
                         required
                         onChange={this.handleFileChange}

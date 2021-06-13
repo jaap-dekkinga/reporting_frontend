@@ -120,16 +120,16 @@ class Fingerprints extends React.Component<
             <FormDialog
               title="New"
               isEditMode={true}
-              model={{
-                id: 10,
-                type: "open_page",
-                name: "test finger",
-                description: "desc",
-                info: "info finger",
-                createdAt: "10/10/2020",
-                updatedAt: "10/11/2020",
-                fileNameOrUrl: "sample file",
-              }}
+              // model={{
+              //   id: 10,
+              //   type: "open_page",
+              //   name: "test finger",
+              //   description: "desc",
+              //   info: "info finger",
+              //   createdAt: "10/10/2020",
+              //   updatedAt: "10/11/2020",
+              //   fileNameOrUrl: "sample file",
+              // }}
             />
           </Grid>
           {this.state.showSpinner ? (
