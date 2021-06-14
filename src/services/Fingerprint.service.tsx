@@ -10,7 +10,7 @@ const updateFingerprintURL =
 
 //DELETE -
 const deleteFingerprintURL =
-  "https://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/delete-fingerprint";
+  "http://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/delete-fingerprint?id=";
 
 // GET -
 const getFingerprintsURL =
@@ -104,7 +104,7 @@ export const updateFingerprint = async (
 //delete
 export const deleteFingerprint = async (id: string): Promise<any> => {
   // setShowSpinner(true);
-  let response = await fetch(deleteFingerprintURL, {
+  let response = await fetch(deleteFingerprintURL + id, {
     method: "DELETE",
     mode: "cors",
   }).then(handleErrors);
