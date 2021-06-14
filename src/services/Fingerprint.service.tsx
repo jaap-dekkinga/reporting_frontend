@@ -42,15 +42,15 @@ export const createFingerprint = async (
   // setShowSpinner(true);
   const formData = new FormData();
 
-  if (undefined !== data.mp3data || null !== data.mp3data) {
-    formData.append("mp3file", data.mp3data!);
+  if (undefined !== data.fingerprint || null !== data.fingerprint) {
+    formData.append("mp3file", data.fingerprint!);
   }
   formData.append("name", data.name);
   formData.append("description", data.description);
   formData.append("type", data.type);
   formData.append("info", data.info);
   // formData.append("id", data.id.toString());
-  // formData.append(name, data.url);
+  formData.append("url", data.url);
 
   let response = await fetch(createFingerprintURL, {
     method: "POST",
@@ -79,15 +79,15 @@ export const updateFingerprint = async (
 ): Promise<any> => {
   const formData = new FormData();
 
-  if (undefined !== data.mp3data || null !== data.mp3data) {
-    formData.append("mp3file", data.mp3data!);
+  if (undefined !== data.fingerprint || null !== data.fingerprint) {
+    formData.append("mp3file", data.fingerprint!);
   }
   formData.append("name", data.name);
   formData.append("description", data.description);
   formData.append("type", data.type);
   formData.append("info", data.info);
   formData.append("id", data.id.toString());
-  // formData.append(name, data.url);
+  formData.append("url", data.url);
 
   let response = await fetch(updateFingerprintURL, {
     method: "PUT",
@@ -123,7 +123,8 @@ export const getFingerprints = async (): Promise<FingerprintModel[]> => {
     mode: "cors",
   }).then(handleErrors);
   let result = await response.json().then((data) => {
-    return data.data;
+    console.log(data);
+    return data;
   });
 
   return result as FingerprintModel[];

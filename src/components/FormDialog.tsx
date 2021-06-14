@@ -42,9 +42,9 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       type: "",
       description: "",
       info: "",
-      createdAt: "",
-      updatedAt: "",
-      fileNameOrUrl: "sample.mp3",
+      date_created: "",
+      date_updated: "",
+      url: "sample.mp3",
     },
     isDialogOpen: false,
     showSpinner: true,
@@ -66,6 +66,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       ...this.state,
       isDialogOpen: false,
     });
+    this.props.submitCancelCallback && this.props.submitCancelCallback(true);
   };
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,7 +107,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       ...this.state,
       fingerprint: {
         ...this.state.fingerprint,
-        mp3data: file,
+        fingerprint: file,
       },
     });
   };
@@ -146,12 +147,12 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
               isDialogOpen: false,
               showSpinner: false,
             });
+            this.props.submitCancelCallback(true);
           })
           .catch((error) => {
             // show error alert
             this.setState({
               ...this.state,
-              isDialogOpen: false,
               showSpinner: false,
             });
             alert(error.message);
@@ -162,6 +163,8 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
           isDialogOpen: false,
           showSpinner: false,
         });
+        this.props.submitCancelCallback &&
+          this.props.submitCancelCallback(true);
       }
     } else {
       let res = createFingerprint(this.state.fingerprint);
@@ -172,12 +175,13 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             isDialogOpen: false,
             showSpinner: false,
           });
+          this.props.submitCancelCallback &&
+            this.props.submitCancelCallback(true);
         })
         .catch((error) => {
           // show error alert
           this.setState({
             ...this.state,
-            isDialogOpen: false,
             showSpinner: false,
           });
           alert(error.message);
@@ -220,13 +224,12 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   }
 
   render() {
-    let { title, children, classes } = this.props;
-    console.log(title, children !== undefined);
+    let { title, children, classes, variant } = this.props;
     return (
       <>
         {children !== undefined && children !== null ? (
           <Button
-            variant="contained"
+            variant={variant}
             color="primary"
             onClick={this.handleClickOpen}
           >

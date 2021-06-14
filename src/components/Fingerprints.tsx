@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { withStyles } from "@material-ui/core/styles";
 
 import Table from "@material-ui/core/Table";
@@ -6,7 +6,7 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
+// import Paper from "@material-ui/core/Paper";
 import {
   CircularProgress,
   Grid,
@@ -18,11 +18,7 @@ import EditIcon from "@material-ui/icons/Edit";
 
 import FormDialog from "./FormDialog";
 
-import {
-  FingerprintModel,
-  FingerprintProps,
-  FingerprintState,
-} from "../types/FingerprintModel";
+import { FingerprintModel, FingerprintProps } from "../types/FingerprintModel";
 import {
   deleteFingerprint,
   getFingerprints,
@@ -72,13 +68,16 @@ class Fingerprints extends React.Component<
     };
   }
   componentDidMount() {
+    this.loadData();
+  }
+
+  loadData = () => {
     this.setState({
       ...this.state,
       showSpinner: true,
     });
     getFingerprints()
       .then((data) => {
-        console.log(data);
         let showList = data && data.length > 0;
         this.setState({
           fingerprints: data,
@@ -87,7 +86,7 @@ class Fingerprints extends React.Component<
         });
       })
       .catch((error) => alert(error.message));
-  }
+  };
 
   handleDelete = (id: number) => {
     this.setState({
@@ -100,6 +99,7 @@ class Fingerprints extends React.Component<
           ...this.state,
           showSpinner: false,
         });
+        this.refreshPage();
       })
       .catch((error) => {
         this.setState({
@@ -109,6 +109,8 @@ class Fingerprints extends React.Component<
         alert(error.message);
       });
   };
+
+  refreshPage = () => {};
 
   render() {
     const { classes } = this.props;
@@ -130,16 +132,15 @@ class Fingerprints extends React.Component<
               //   updatedAt: "10/11/2020",
               //   fileNameOrUrl: "sample file",
               // }}
+              submitCancelCallback={(status: boolean) => {
+                if (status) {
+                  this.refreshPage();
+                }
+              }}
             />
           </Grid>
           {this.state.showSpinner ? (
-            <Grid
-              item
-              xs={12}
-              alignContent="center"
-              alignItems="center"
-              justify="center"
-            >
+            <Grid item xs={12}>
               <CircularProgress size={20} className={classes.spinner} />
             </Grid>
           ) : (
@@ -176,19 +177,26 @@ class Fingerprints extends React.Component<
                           {row.info}
                         </StyledTableCell>
                         <StyledTableCell align="right">
-                          {row.createdAt}
+                          {row.date_created}
                         </StyledTableCell>
                         <StyledTableCell align="right">
-                          {row.updatedAt}
+                          {row.date_updated}
                         </StyledTableCell>
                         <StyledTableCell>
                           <Grid container>
                             <Grid item xs={6}>
-                              <FormDialog model={row}>
+                              <FormDialog
+                                model={row}
+                                variant={"text"}
+                                isEditMode
+                                submitCancelCallback={(status: boolean) => {
+                                  if (status) {
+                                    this.refreshPage();
+                                  }
+                                }}
+                              >
                                 {/* Sending icon as children */}
-                                <IconButton aria-label="edit" color="secondary">
-                                  <EditIcon />
-                                </IconButton>
+                                <EditIcon color="secondary" />
                               </FormDialog>
                             </Grid>
                             <Grid item xs={6}>
