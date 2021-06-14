@@ -110,7 +110,9 @@ class Fingerprints extends React.Component<
       });
   };
 
-  refreshPage = () => {};
+  refreshPage = () => {
+    this.loadData();
+  };
 
   render() {
     const { classes } = this.props;

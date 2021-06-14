@@ -22,6 +22,7 @@ import {
   getFingerprintTypes,
   updateFingerprint,
 } from "../services/Fingerprint.service";
+import { initialState } from "../common/consts";
 
 /**
  * Dialog to show the form to create fingerprint
@@ -50,9 +51,12 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
     showSpinner: true,
   };
 
-  // constructor(props: FingerprintProps) {
-  //   super(props);
-  // }
+  initialState!: FingerprintState;
+
+  constructor(props: FingerprintProps) {
+    super(props);
+    this.initialState = this.state;
+  }
 
   handleClickOpen = () => {
     this.setState({
@@ -143,11 +147,12 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
         res
           .then((data) => {
             this.setState({
-              ...this.state,
+              ...this.initialState,
               isDialogOpen: false,
               showSpinner: false,
             });
-            this.props.submitCancelCallback(true);
+            this.props.submitCancelCallback &&
+              this.props.submitCancelCallback(true);
           })
           .catch((error) => {
             // show error alert
@@ -171,7 +176,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       res
         .then((data) => {
           this.setState({
-            ...this.state,
+            ...this.initialState,
             isDialogOpen: false,
             showSpinner: false,
           });
@@ -191,7 +196,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
 
   componentDidMount() {
     this.setState({
-      ...this.state,
+      ...this.initialState,
       showSpinner: true,
     });
     let result = getFingerprintTypes();
