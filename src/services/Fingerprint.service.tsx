@@ -2,23 +2,23 @@ import { promises } from "dns";
 import { FingerprintModel, FingerprintType } from "../types/FingerprintModel";
 // POST -
 const createFingerprintURL =
-  "https://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/create-fingerprint";
+  "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/create-fingerprint";
 
 // PUT -
 const updateFingerprintURL =
-  "https://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/update-fingerprint";
+  "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/update-fingerprint";
 
 //DELETE -
 const deleteFingerprintURL =
-  "http://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/delete-fingerprint?id=";
+  "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/delete-fingerprint?id=";
 
 // GET -
 const getFingerprintsURL =
-  "https://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/get-fingerprint?limit=10&offset=1";
+  "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/get-fingerprint?limit=50&offset=1";
 
 // GET -
 const typesURL =
-  "https://ru4sd4wcr2.execute-api.us-east-2.amazonaws.com/dev/type";
+  "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/type";
 
 /// returns the type of fingerprints
 export const getFingerprintTypes = async (): Promise<any> => {
@@ -105,7 +105,7 @@ export const updateFingerprint = async (
 export const deleteFingerprint = async (id: string): Promise<any> => {
   // setShowSpinner(true);
   let response = await fetch(deleteFingerprintURL + id, {
-    method: "DELETE",
+    method: "GET",
     mode: "cors",
   }).then(handleErrors);
   let result = await response.json().then((data) => {
