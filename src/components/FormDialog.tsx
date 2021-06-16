@@ -3,6 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import {
   Button,
   MenuItem,
+  Tooltip,
   Grid,
   TextField,
   CircularProgress,
@@ -258,22 +259,25 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             <CircularProgress size={20} className={classes.spinner} />
           ) : (
             <>
-              <DialogTitle id="form-dialog-title">Fingerprint</DialogTitle>
+              <DialogTitle id="form-dialog-title">New TuneURL</DialogTitle>
               <DialogContent>
                 <form onSubmit={() => {}}>
                   <Grid container direction="column">
                     <Grid item>
+                    <Tooltip title="Choose audio File">
                       <TextField
                         autoFocus
                         margin="dense"
                         id="fingerprintName"
                         name="fingerprintName"
-                        label="Fingerprint File"
+                        label="Choose audio File"
                         type="file"
+                        placeholder= "Choose audio File"
                         fullWidth
                         required
                         onChange={this.handleFileChange}
                       />
+                      </Tooltip>
                     </Grid>
                     <Grid item>
                       <TextField
@@ -308,10 +312,10 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                         id="type"
                         name="type"
                         select
-                        label="Type"
+                        label="TuneURL type"
                         value={this.state.fingerprint.type}
                         onChange={this.handleChange}
-                        helperText="Please select fingerprint type."
+                        helperText="Please select TuneURL type."
                         fullWidth
                         required
                       >
@@ -346,7 +350,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                   Cancel
                 </Button>
                 <Button onClick={this.handleAdd} color="primary">
-                  Add
+                  Create
                 </Button>
               </DialogActions>
             </>

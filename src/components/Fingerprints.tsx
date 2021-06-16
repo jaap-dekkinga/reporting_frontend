@@ -18,7 +18,7 @@ import EditIcon from "@material-ui/icons/Edit";
 
 import FormDialog from "./FormDialog";
 
-import { FingerprintModel, FingerprintProps } from "../types/FingerprintModel";
+import { FingerprintModel, FingerprintProps, sortType } from "../types/FingerprintModel";
 import {
   deleteFingerprint,
   getFingerprints,
@@ -46,6 +46,7 @@ type FingerprintListState = {
   fingerprints: FingerprintModel[];
   showList: boolean;
   showSpinner: boolean;
+  sort: sortType;
 };
 
 const styles = () => ({
@@ -65,11 +66,59 @@ class Fingerprints extends React.Component<
       fingerprints: [],
       showList: false,
       showSpinner: true,
+      sort: {
+        column: '',
+        direction: 'desc',
+      }
     };
+    this.onSort = this.onSort.bind(this)
   }
   componentDidMount() {
     this.loadData();
   }
+
+  onSort = (column: string) => (e: React.ChangeEvent<any>) => {
+    const direction = this.state.sort.column ? (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'desc';
+    const sortedData = this.state.fingerprints.sort((a, b) => {
+      if (column === 'name') {
+        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+  
+        // names must be equal
+        return 0;
+      } else {
+        return a.id - b.id;
+      }
+    });
+  
+    if (direction === 'desc') {
+      sortedData.reverse();
+    }
+  
+    this.setState({
+      fingerprints: sortedData,
+      sort: {
+        column,
+        direction,
+      }
+    });
+  };
+
+  setArrow = (column: string) => {
+    let className = 'sort-direction';
+    if (this.state.sort.column === column) {
+      className += this.state.sort.direction === 'asc' ? ' asc' : ' desc';
+    }
+    console.log(className);
+    return className;
+  };
+  
 
   loadData = () => {
     this.setState({
@@ -86,6 +135,15 @@ class Fingerprints extends React.Component<
         });
       })
       .catch((error) => alert(error.message));
+  };
+
+  formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+      return new Date(dateString).toLocaleDateString([], options);
   };
 
   handleDelete = (id: number) => {
@@ -150,8 +208,9 @@ class Fingerprints extends React.Component<
               <Table className={classes.table} aria-label="customized table">
                 <TableHead>
                   <StyledTableRow>
-                    <StyledTableCell>ID</StyledTableCell>
-                    <StyledTableCell>Name</StyledTableCell>
+                    {/* <StyledTableCell onClick={e => this.onSort(e)}>ID</StyledTableCell> */}
+                    <StyledTableCell onClick={this.onSort('id')}>ID  <span className={this.setArrow('id')}></span></StyledTableCell>
+                    <StyledTableCell onClick={this.onSort('name')}>Name <span className={this.setArrow('name')}></span></StyledTableCell>
                     <StyledTableCell>Description</StyledTableCell>
                     <StyledTableCell>Type</StyledTableCell>
                     <StyledTableCell>Info</StyledTableCell>
@@ -170,7 +229,7 @@ class Fingerprints extends React.Component<
                         </StyledTableCell>
                         <StyledTableCell>{row.name}</StyledTableCell>
                         <StyledTableCell align="right">
-                          {row.description}
+                          {row.description.substring(0, 20)+ '...'}
                         </StyledTableCell>
                         <StyledTableCell align="right">
                           {row.type}
@@ -179,10 +238,10 @@ class Fingerprints extends React.Component<
                           {row.info}
                         </StyledTableCell>
                         <StyledTableCell align="right">
-                          {row.date_created}
+                          {this.formatDate(row.date_created)}
                         </StyledTableCell>
                         <StyledTableCell align="right">
-                          {row.date_updated}
+                          {this.formatDate(row.date_updated)}
                         </StyledTableCell>
                         <StyledTableCell>
                           <Grid container>
