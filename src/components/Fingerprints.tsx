@@ -123,7 +123,6 @@ class Fingerprints extends React.Component<
           <Grid item xs={1} style={{ padding: 10 }}>
             <FormDialog
               title="New"
-              isEditMode={true}
               // model={{
               //   id: 10,
               //   type: "open_page",
