@@ -24,6 +24,7 @@ export enum interestActions {
   "shared" = "shared",
 }
 
+
 export const API = {
   getTuneUrlIDs:
     "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getTuneURL_IDs",
@@ -31,6 +32,16 @@ export const API = {
     "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getGraphData",
   getTop10minuties:
     "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getTop10minuties",
+  createFingerprintURL:
+    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/create-fingerprint",
+  updateFingerprintURL:
+    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/update-fingerprint",
+  deleteFingerprintURL:
+    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/delete-fingerprint?id=",
+  getFingerprintsURL:
+    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/get-fingerprint?limit=50&offset=1",
+  typesURL:
+    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/type"
 };
 
 export const drawerWidth = 240;

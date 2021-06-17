@@ -9,6 +9,7 @@ import {
 import {
   Button,
   MenuItem,
+  Tooltip,
   Grid,
   TextField,
   CircularProgress,
@@ -266,7 +267,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          {true && (
+          {this.state.showSpinner && (
             <CircularProgress
               style={{ margin: 10 }}
               color="secondary"
