@@ -128,7 +128,7 @@ export default () => {
               />
             </ListItemIcon>
             <ListItemText
-              primary="Fingerprints"
+              primary="TuneURLs"
               disableTypography={true}
               className={classes.listText}
             />

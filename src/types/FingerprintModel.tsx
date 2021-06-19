@@ -41,6 +41,7 @@ export type FingerprintState = {
   fingerprint: FingerprintModel;
   isDialogOpen: boolean;
   showSpinner: boolean;
+  filename: string;
 };
 
 export interface sortType {

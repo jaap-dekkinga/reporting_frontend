@@ -80,7 +80,7 @@ class Fingerprints extends React.Component<
   onSort = (column: string) => (e: React.ChangeEvent<any>) => {
     const direction = this.state.sort.column ? (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'desc';
     const sortedData = this.state.fingerprints.sort((a, b) => {
-      if (column === 'name') {
+      if (column === 'name' || column === 'type') {
         const nameA = a.name.toUpperCase(); // ignore upper and lowercase
         const nameB = b.name.toUpperCase(); // ignore upper and lowercase
         if (nameA < nameB) {
@@ -209,9 +209,9 @@ class Fingerprints extends React.Component<
                   <StyledTableRow>
                     {/* <StyledTableCell onClick={e => this.onSort(e)}>ID</StyledTableCell> */}
                     <StyledTableCell onClick={this.onSort('id')}>ID  <span className={this.setArrow('id')}></span></StyledTableCell>
+                    <StyledTableCell onClick={this.onSort('type')}>Type</StyledTableCell>
                     <StyledTableCell onClick={this.onSort('name')}>Name <span className={this.setArrow('name')}></span></StyledTableCell>
-                    <StyledTableCell>Description</StyledTableCell>
-                    <StyledTableCell>Type</StyledTableCell>
+                    {/* <StyledTableCell>Description</StyledTableCell> */}
                     <StyledTableCell>Info</StyledTableCell>
                     <StyledTableCell>Created On</StyledTableCell>
                     <StyledTableCell>Update On</StyledTableCell>
@@ -226,13 +226,13 @@ class Fingerprints extends React.Component<
                         <StyledTableCell component="th" scope="row">
                           {row.id}
                         </StyledTableCell>
-                        <StyledTableCell>{row.name}</StyledTableCell>
-                        <StyledTableCell align="right">
-                          {row.description.substring(0, 20)+ '...'}
-                        </StyledTableCell>
                         <StyledTableCell align="right">
                           {row.type}
                         </StyledTableCell>
+                        <StyledTableCell>{row.name}</StyledTableCell>
+                        {/* <StyledTableCell align="right">
+                          {row.description.substring(0, 20)+ '...'}
+                        </StyledTableCell> */}
                         <StyledTableCell align="right">
                           {row.info}
                         </StyledTableCell>

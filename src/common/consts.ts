@@ -39,7 +39,7 @@ export const API = {
   deleteFingerprintURL:
     "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/delete-fingerprint?id=",
   getFingerprintsURL:
-    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/get-fingerprint?limit=50&offset=1",
+    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/get-fingerprint?limit=50&offset=0",
   typesURL:
     "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/type"
 };

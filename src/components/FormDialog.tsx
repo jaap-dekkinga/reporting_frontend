@@ -9,7 +9,6 @@ import {
 import {
   Button,
   MenuItem,
-  Tooltip,
   Grid,
   TextField,
   CircularProgress,
@@ -59,8 +58,9 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       info: "",
       date_created: "",
       date_updated: "",
-      url: "sample.mp3",
+      url: "sample.mp3"
     },
+    filename:"",
     isDialogOpen: false,
     showSpinner: false,
   };
@@ -75,6 +75,9 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   handleClickOpen = () => {
     this.loadTypes();
   };
+
+  fileInputRef: React.RefObject<HTMLInputElement> = React.createRef();
+
 
   handleClose = () => {
     this.setState({
@@ -119,6 +122,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
 
     this.setState({
       ...this.state,
+      filename: file.name,
       fingerprint: {
         ...this.state.fingerprint,
         fingerprint: file,
@@ -204,6 +208,10 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
     }
   };
 
+  forwardClickToInputElement = () => {
+    this.fileInputRef.current!.click();
+  }
+
   loadTypes = () => {
     this.setState({
       ...this.state,
@@ -275,22 +283,54 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             />
           )}
           <>
-            <DialogTitle id="form-dialog-title">Fingerprint</DialogTitle>
+            <DialogTitle id="form-dialog-title">new TuneURL</DialogTitle>
             <DialogContent>
               <form onSubmit={() => {}}>
                 <Grid container direction="column">
                   <Grid item>
-                    <TextField
+                    <label htmlFor="btn-upload">
+                    <input
                       autoFocus
-                      margin="dense"
                       id="fingerprintName"
                       name="fingerprintName"
-                      label="Fingerprint File"
+                      ref={this.fileInputRef}
                       type="file"
-                      fullWidth
-                      required
+                      accept="audio/*"
+                      style={{ display: 'none' }}
                       onChange={this.handleFileChange}
                     />
+                    <Button
+                          className="btn-choose"
+                          variant="outlined"
+                          component="span"
+                          onClick={this.forwardClickToInputElement}>
+                          Choose Audio File
+                        </Button>
+                      </label>
+                      <div className="file-name">
+                      { this.state && this.state.filename ? this.state.filename : null}
+                      </div>
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      id="type"
+                      name="type"
+                      select
+                      label="Type"
+                      value={this.state.fingerprint.type}
+                      onChange={this.handleChange}
+                      helperText="Please select TuneURL type."
+                      fullWidth
+                      required
+                    >
+                      {this.state.types &&
+                        this.state.types.length > 0 &&
+                        this.state.types.map((option) => (
+                          <MenuItem key={option.id} value={option.type}>
+                            {option.type}
+                          </MenuItem>
+                        ))}
+                    </TextField>
                   </Grid>
                   <Grid item>
                     <TextField
@@ -310,41 +350,6 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                     <TextField
                       autoFocus
                       margin="dense"
-                      id="description"
-                      name="description"
-                      label="Description"
-                      type="text"
-                      value={this.state.fingerprint.description}
-                      fullWidth
-                      required
-                      onChange={this.handleChange}
-                    />
-                  </Grid>
-                  <Grid item>
-                    <TextField
-                      id="type"
-                      name="type"
-                      select
-                      label="Type"
-                      value={this.state.fingerprint.type}
-                      onChange={this.handleChange}
-                      helperText="Please select fingerprint type."
-                      fullWidth
-                      required
-                    >
-                      {this.state.types &&
-                        this.state.types.length > 0 &&
-                        this.state.types.map((option) => (
-                          <MenuItem key={option.id} value={option.type}>
-                            {option.type}
-                          </MenuItem>
-                        ))}
-                    </TextField>
-                  </Grid>
-                  <Grid item>
-                    <TextField
-                      autoFocus
-                      margin="dense"
                       id="info"
                       name="info"
                       label="Info"
@@ -355,6 +360,21 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                       onChange={this.handleChange}
                     />
                   </Grid>
+                  <Grid item>
+                    <TextField
+                      autoFocus
+                      margin="dense"
+                      id="description"
+                      name="description"
+                      label="Description"
+                      type="text"
+                      value={this.state.fingerprint.description}
+                      fullWidth
+                      onChange={this.handleChange}
+                    />
+                  </Grid>
+                 
+                 
                 </Grid>
               </form>
             </DialogContent>
@@ -363,7 +383,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                 Cancel
               </Button>
               <Button onClick={this.handleAdd} color="primary">
-                {isEditMode ? "Update" : "Add"}
+                {isEditMode ? "Update" : "Create"}
               </Button>
             </DialogActions>
           </>

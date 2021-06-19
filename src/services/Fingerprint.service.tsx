@@ -96,7 +96,7 @@ export const deleteFingerprint = async (id: string): Promise<any> => {
   return result;
 };
 
-//list
+//listing figerprint
 export const getFingerprints = async (): Promise<FingerprintModel[]> => {
   console.log("Get Fingerprint");
   let response = await fetch(API.getFingerprintsURL, {
