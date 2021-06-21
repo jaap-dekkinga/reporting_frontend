@@ -42,9 +42,17 @@ export type FingerprintState = {
   isDialogOpen: boolean;
   showSpinner: boolean;
   filename: string;
+  errors: {
+    name: string;
+    fingerprint: string;
+    info: string;
+    type: string;
+
+    status: boolean;
+  };
 };
 
 export interface sortType {
-  column: string,
-  direction: string
+  column: string;
+  direction: string;
 }

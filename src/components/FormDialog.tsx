@@ -1,10 +1,5 @@
 import React, { ChangeEvent } from "react";
-import {
-  makeStyles,
-  createStyles,
-  withStyles,
-  Theme,
-} from "@material-ui/core/styles";
+import { createStyles, withStyles, Theme } from "@material-ui/core/styles";
 
 import {
   Button,
@@ -29,23 +24,24 @@ import {
   getFingerprintTypes,
   updateFingerprint,
 } from "../services/Fingerprint.service";
+import { FormHelperText } from "@material-ui/core";
 
 /**
  * Dialog to show the form to create fingerprint
  */
-
-const styles = () =>
-  makeStyles((theme: Theme) =>
-    createStyles({
-      table: {
-        minWidth: 700,
-      },
-      spinner: {
-        margin: theme.spacing(10),
-        color: theme.palette.secondary.main,
-      },
-    })
-  );
+const styles = (theme: Theme) =>
+  createStyles({
+    table: {
+      minWidth: 700,
+    },
+    spinner: {
+      margin: theme.spacing(10),
+      color: theme.palette.secondary.main,
+    },
+    helperText: {
+      color: theme.palette.error.main,
+    },
+  });
 
 class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   state: FingerprintState = {
@@ -58,11 +54,19 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       info: "",
       date_created: "",
       date_updated: "",
-      url: "sample.mp3"
+      url: "sample.mp3",
     },
-    filename:"",
+    filename: "",
     isDialogOpen: false,
     showSpinner: false,
+    errors: {
+      name: "",
+      fingerprint: "",
+      info: "",
+      type: "",
+
+      status: false,
+    },
   };
 
   initialState!: FingerprintState;
@@ -78,10 +82,9 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
 
   fileInputRef: React.RefObject<HTMLInputElement> = React.createRef();
 
-
   handleClose = () => {
     this.setState({
-      ...this.state,
+      ...this.initialState,
       isDialogOpen: false,
     });
     this.props.submitCancelCallback && this.props.submitCancelCallback(true);
@@ -97,6 +100,10 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       fingerprint: {
         ...this.state.fingerprint,
         [name]: value || "",
+      },
+      errors: {
+        ...this.state.errors,
+        [name]: false,
       },
     });
   };
@@ -149,12 +156,22 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
 
   isFingerprintChanged = false;
 
-  handleAdd = () => {
+  handleAdd = (event: React.FormEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
     console.log(this.state.fingerprint);
     this.setState({
       ...this.state,
       showSpinner: true,
     });
+    let errors = this.validateForm();
+
+    if (errors.status) {
+      // show errors
+      this.setState({ ...this.state, errors, showSpinner: false });
+      return;
+    }
+
     if (this.props.model) {
       if (this.isFingerprintChanged) {
         let res = updateFingerprint(this.state.fingerprint);
@@ -208,9 +225,43 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
     }
   };
 
+  validateForm = () => {
+    // check for non-empty values right now.
+
+    let errors = {
+      name: "",
+      fingerprint: "",
+      info: "",
+      type: "",
+
+      status: false,
+    };
+
+    let { name, type, info, fingerprint } = this.state.fingerprint;
+    if (fingerprint === undefined || fingerprint === null) {
+      errors.fingerprint = "Please select TuneURL file.";
+      errors.status = true;
+    }
+    if (type.length === 0) {
+      errors.type = "Please select TuneURL type.";
+      errors.status = true;
+    }
+    if (name.length === 0) {
+      errors.name = "Name can not be empty.";
+      errors.status = true;
+    }
+
+    if (info.length === 0) {
+      errors.info = "Please provide some information about this TuneURL.";
+      errors.status = true;
+    }
+
+    return errors;
+  };
+
   forwardClickToInputElement = () => {
     this.fileInputRef.current!.click();
-  }
+  };
 
   loadTypes = () => {
     this.setState({
@@ -250,7 +301,9 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   }
 
   render() {
-    let { title, children, classes, variant, isEditMode } = this.props;
+    let { title, children, variant, isEditMode } = this.props;
+    let errors = this.state.errors;
+
     return (
       <>
         {children !== undefined && children !== null ? (
@@ -285,31 +338,35 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
           <>
             <DialogTitle id="form-dialog-title">new TuneURL</DialogTitle>
             <DialogContent>
-              <form onSubmit={() => {}}>
+              <form>
                 <Grid container direction="column">
                   <Grid item>
                     <label htmlFor="btn-upload">
-                    <input
-                      autoFocus
-                      id="fingerprintName"
-                      name="fingerprintName"
-                      ref={this.fileInputRef}
-                      type="file"
-                      accept="audio/*"
-                      style={{ display: 'none' }}
-                      onChange={this.handleFileChange}
-                    />
-                    <Button
-                          className="btn-choose"
-                          variant="outlined"
-                          component="span"
-                          onClick={this.forwardClickToInputElement}>
-                          Choose Audio File
-                        </Button>
-                      </label>
-                      <div className="file-name">
-                      { this.state && this.state.filename ? this.state.filename : null}
-                      </div>
+                      <input
+                        autoFocus
+                        id="fingerprintName"
+                        name="fingerprintName"
+                        ref={this.fileInputRef}
+                        type="file"
+                        accept="audio/*"
+                        style={{ display: "none" }}
+                        onChange={this.handleFileChange}
+                      />
+                      <Button
+                        className="btn-choose"
+                        variant="outlined"
+                        component="span"
+                        onClick={this.forwardClickToInputElement}
+                      >
+                        Choose Audio File
+                      </Button>
+                    </label>
+                    <div className="file-name">
+                      {this.state && this.state.filename
+                        ? this.state.filename
+                        : null}
+                    </div>
+                    {errors.fingerprint && this.renderError(errors.fingerprint)}
                   </Grid>
                   <Grid item>
                     <TextField
@@ -319,7 +376,6 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                       label="Type"
                       value={this.state.fingerprint.type}
                       onChange={this.handleChange}
-                      helperText="Please select TuneURL type."
                       fullWidth
                       required
                     >
@@ -331,6 +387,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                           </MenuItem>
                         ))}
                     </TextField>
+                    {errors.type && this.renderError(errors.type)}
                   </Grid>
                   <Grid item>
                     <TextField
@@ -345,6 +402,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                       required
                       onChange={this.handleChange}
                     />
+                    {errors.name && this.renderError(errors.name)}
                   </Grid>
                   <Grid item>
                     <TextField
@@ -359,6 +417,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                       required
                       onChange={this.handleChange}
                     />
+                    {errors.info && this.renderError(errors.info)}
                   </Grid>
                   <Grid item>
                     <TextField
@@ -373,8 +432,6 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                       onChange={this.handleChange}
                     />
                   </Grid>
-                 
-                 
                 </Grid>
               </form>
             </DialogContent>
@@ -391,6 +448,14 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       </>
     );
   }
+
+  renderError = (error: string) => {
+    let { classes } = this.props;
+    console.log(classes);
+    return (
+      <FormHelperText className={classes.helperText}>{error}</FormHelperText>
+    );
+  };
 }
 
 export default withStyles(styles, { withTheme: true })(FormDialog);

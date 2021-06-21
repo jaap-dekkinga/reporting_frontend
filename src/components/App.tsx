@@ -27,6 +27,9 @@ function App() {
           secondary: {
             main: "#7e57c2", //400
           },
+          error: {
+            main: "#ff1111",
+          },
           action: {
             //focusOpacity: 0.2,
             //hoverOpacity: 0.2,

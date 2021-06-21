@@ -18,7 +18,11 @@ import EditIcon from "@material-ui/icons/Edit";
 
 import FormDialog from "./FormDialog";
 
-import { FingerprintModel, FingerprintProps, sortType } from "../types/FingerprintModel";
+import {
+  FingerprintModel,
+  FingerprintProps,
+  sortType,
+} from "../types/FingerprintModel";
 import {
   deleteFingerprint,
   getFingerprints,
@@ -67,20 +71,24 @@ class Fingerprints extends React.Component<
       showList: false,
       showSpinner: true,
       sort: {
-        column: '',
-        direction: 'desc',
-      }
+        column: "",
+        direction: "desc",
+      },
     };
-    this.onSort = this.onSort.bind(this)
+    this.onSort = this.onSort.bind(this);
   }
   componentDidMount() {
     this.loadData();
   }
 
   onSort = (column: string) => (e: React.ChangeEvent<any>) => {
-    const direction = this.state.sort.column ? (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'desc';
+    const direction = this.state.sort.column
+      ? this.state.sort.direction === "asc"
+        ? "desc"
+        : "asc"
+      : "desc";
     const sortedData = this.state.fingerprints.sort((a, b) => {
-      if (column === 'name' || column === 'type') {
+      if (column === "name" || column === "type") {
         const nameA = a.name.toUpperCase(); // ignore upper and lowercase
         const nameB = b.name.toUpperCase(); // ignore upper and lowercase
         if (nameA < nameB) {
@@ -89,36 +97,35 @@ class Fingerprints extends React.Component<
         if (nameA > nameB) {
           return 1;
         }
-  
+
         // names must be equal
         return 0;
       } else {
         return a.id - b.id;
       }
     });
-  
-    if (direction === 'desc') {
+
+    if (direction === "desc") {
       sortedData.reverse();
     }
-  
+
     this.setState({
       fingerprints: sortedData,
       sort: {
         column,
         direction,
-      }
+      },
     });
   };
 
   setArrow = (column: string) => {
-    let className = 'sort-direction';
+    let className = "sort-direction";
     if (this.state.sort.column === column) {
-      className += this.state.sort.direction === 'asc' ? ' asc' : ' desc';
+      className += this.state.sort.direction === "asc" ? " asc" : " desc";
     }
     console.log(className);
     return className;
   };
-  
 
   loadData = () => {
     this.setState({
@@ -143,7 +150,7 @@ class Fingerprints extends React.Component<
       month: "long",
       day: "numeric",
     };
-      return new Date(dateString).toLocaleDateString([], options);
+    return new Date(dateString).toLocaleDateString([], options);
   };
 
   handleDelete = (id: number) => {
@@ -181,16 +188,6 @@ class Fingerprints extends React.Component<
           <Grid item xs={1} style={{ padding: 10 }}>
             <FormDialog
               title="New"
-              // model={{
-              //   id: 10,
-              //   type: "open_page",
-              //   name: "test finger",
-              //   description: "desc",
-              //   info: "info finger",
-              //   createdAt: "10/10/2020",
-              //   updatedAt: "10/11/2020",
-              //   fileNameOrUrl: "sample file",
-              // }}
               submitCancelCallback={(status: boolean) => {
                 if (status) {
                   this.refreshPage();
@@ -208,9 +205,15 @@ class Fingerprints extends React.Component<
                 <TableHead>
                   <StyledTableRow>
                     {/* <StyledTableCell onClick={e => this.onSort(e)}>ID</StyledTableCell> */}
-                    <StyledTableCell onClick={this.onSort('id')}>ID  <span className={this.setArrow('id')}></span></StyledTableCell>
-                    <StyledTableCell onClick={this.onSort('type')}>Type</StyledTableCell>
-                    <StyledTableCell onClick={this.onSort('name')}>Name <span className={this.setArrow('name')}></span></StyledTableCell>
+                    <StyledTableCell onClick={this.onSort("id")}>
+                      ID <span className={this.setArrow("id")}></span>
+                    </StyledTableCell>
+                    <StyledTableCell onClick={this.onSort("type")}>
+                      Type
+                    </StyledTableCell>
+                    <StyledTableCell onClick={this.onSort("name")}>
+                      Name <span className={this.setArrow("name")}></span>
+                    </StyledTableCell>
                     {/* <StyledTableCell>Description</StyledTableCell> */}
                     <StyledTableCell>Info</StyledTableCell>
                     <StyledTableCell>Created On</StyledTableCell>
@@ -226,20 +229,20 @@ class Fingerprints extends React.Component<
                         <StyledTableCell component="th" scope="row">
                           {row.id}
                         </StyledTableCell>
-                        <StyledTableCell align="right">
+                        <StyledTableCell align="left">
                           {row.type}
                         </StyledTableCell>
                         <StyledTableCell>{row.name}</StyledTableCell>
                         {/* <StyledTableCell align="right">
                           {row.description.substring(0, 20)+ '...'}
                         </StyledTableCell> */}
-                        <StyledTableCell align="right">
+                        <StyledTableCell align="left">
                           {row.info}
                         </StyledTableCell>
-                        <StyledTableCell align="right">
+                        <StyledTableCell align="left">
                           {this.formatDate(row.date_created)}
                         </StyledTableCell>
-                        <StyledTableCell align="right">
+                        <StyledTableCell align="left">
                           {this.formatDate(row.date_updated)}
                         </StyledTableCell>
                         <StyledTableCell>
@@ -256,7 +259,7 @@ class Fingerprints extends React.Component<
                                 }}
                               >
                                 {/* Sending icon as children */}
-                                <EditIcon color="secondary" />
+                                <EditIcon color="secondary" aria-label="edit" />
                               </FormDialog>
                             </Grid>
                             <Grid item xs={6}>
