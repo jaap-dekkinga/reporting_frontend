@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import ImpactIcon from "../../assets/imgs/ImpactIcon.png";
 import Top10Icon from "../../assets/imgs/Top10Icon.png";
+import logo_splash from "../../assets/imgs/tune-logo.png";
 import { drawerWidth, initialState, reports } from "../../common/consts";
 import { setActiveReport } from "../../actions";
 
@@ -122,7 +123,7 @@ export default () => {
           >
             <ListItemIcon>
               <img
-                src={Top10Icon}
+                src={logo_splash}
                 className={classes.listIcon}
                 alt="Impact icon"
               />
