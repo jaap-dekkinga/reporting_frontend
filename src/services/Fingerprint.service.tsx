@@ -71,7 +71,7 @@ export const updateFingerprint = async (
   formData.append("url", data.url);
 
   let response = await fetch(API.updateFingerprintURL, {
-    method: "PUT",
+    method: "POST",
     mode: "cors",
     body: formData,
   });
