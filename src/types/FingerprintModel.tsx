@@ -1,4 +1,5 @@
 import { WithStyles } from "@material-ui/core/styles";
+import { type } from "os";
 import React from "react";
 
 export interface FingerprintModel {
@@ -35,6 +36,11 @@ export interface FingerprintType {
   type: string;
   status: string;
 }
+
+export type FingerprintsData = {
+  count: number;
+  data: FingerprintModel[];
+};
 
 export type FingerprintState = {
   types: FingerprintType[];

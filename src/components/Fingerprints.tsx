@@ -53,6 +53,7 @@ type FingerprintListState = {
   showSpinner: boolean;
   sort: sortType;
   currentPage: number;
+  recordsCount: number;
 };
 
 const styles = () => ({
@@ -77,6 +78,7 @@ class Fingerprints extends React.Component<
         direction: "desc",
       },
       currentPage: 0,
+      recordsCount: 0,
     };
     this.onSort = this.onSort.bind(this);
   }
@@ -137,12 +139,13 @@ class Fingerprints extends React.Component<
     });
     getFingerprints(page)
       .then((data) => {
-        let showList = data && data.length > 0;
+        let showList = data && data.data.length > 0;
         this.setState({
-          fingerprints: data,
+          fingerprints: data.data,
           showList: showList,
           showSpinner: false,
           currentPage: page,
+          recordsCount: data.count,
         });
       })
       .catch((error) => alert(error.message));
@@ -297,13 +300,14 @@ class Fingerprints extends React.Component<
                   No data available right now.
                 </Typography>
               )}
-              {!this.state.showList && (
-                <Pagination
-                  count={10}
-                  page={this.state.currentPage + 1}
-                  onChange={this.handleChange}
-                />
-              )}
+              {this.state.showList &&
+                Math.ceil(this.state.recordsCount / 10) > 1 && (
+                  <Pagination
+                    count={Math.ceil(this.state.recordsCount / 10)}
+                    page={this.state.currentPage + 1}
+                    onChange={this.handleChange}
+                  />
+                )}
             </Grid>
           )}
         </Grid>

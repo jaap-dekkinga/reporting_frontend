@@ -1,4 +1,4 @@
-import { FingerprintModel } from "../types/FingerprintModel";
+import { FingerprintModel, FingerprintsData } from "../types/FingerprintModel";
 import { API } from "../common/consts";
 
 /// returns the type of fingerprints
@@ -99,7 +99,7 @@ export const deleteFingerprint = async (id: string): Promise<any> => {
 //listing figerprint
 export const getFingerprints = async (
   page: number
-): Promise<FingerprintModel[]> => {
+): Promise<FingerprintsData> => {
   console.log("Get Fingerprint");
   let url = API.getFingerprintsURL.replace("[PAGE]", page.toString());
   console.log(url);
@@ -112,5 +112,5 @@ export const getFingerprints = async (
     return data;
   });
 
-  return result as FingerprintModel[];
+  return result;
 };
