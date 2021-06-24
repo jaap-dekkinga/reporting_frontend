@@ -1,5 +1,5 @@
 import { FingerprintModel } from "../types/FingerprintModel";
-import { API } from '../common/consts';
+import { API } from "../common/consts";
 
 /// returns the type of fingerprints
 export const getFingerprintTypes = async (): Promise<any> => {
@@ -97,9 +97,13 @@ export const deleteFingerprint = async (id: string): Promise<any> => {
 };
 
 //listing figerprint
-export const getFingerprints = async (): Promise<FingerprintModel[]> => {
+export const getFingerprints = async (
+  page: number
+): Promise<FingerprintModel[]> => {
   console.log("Get Fingerprint");
-  let response = await fetch(API.getFingerprintsURL, {
+  let url = API.getFingerprintsURL.replace("[PAGE]", page.toString());
+  console.log(url);
+  let response = await fetch(url, {
     method: "GET",
     mode: "cors",
   }).then(handleErrors);

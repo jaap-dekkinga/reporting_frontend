@@ -6,7 +6,8 @@ import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-// import Paper from "@material-ui/core/Paper";
+import Pagination from "@material-ui/lab/Pagination";
+
 import {
   CircularProgress,
   Grid,
@@ -51,11 +52,12 @@ type FingerprintListState = {
   showList: boolean;
   showSpinner: boolean;
   sort: sortType;
+  currentPage: number;
 };
 
 const styles = () => ({
   table: {
-    // minWidth: 700,
+    minWidth: 700,
   },
   tablehead: {},
 });
@@ -74,11 +76,12 @@ class Fingerprints extends React.Component<
         column: "",
         direction: "desc",
       },
+      currentPage: 0,
     };
     this.onSort = this.onSort.bind(this);
   }
   componentDidMount() {
-    this.loadData();
+    this.loadData(this.state.currentPage);
   }
 
   onSort = (column: string) => (e: React.ChangeEvent<any>) => {
@@ -127,18 +130,19 @@ class Fingerprints extends React.Component<
     return className;
   };
 
-  loadData = () => {
+  loadData = (page: number) => {
     this.setState({
       ...this.state,
       showSpinner: true,
     });
-    getFingerprints()
+    getFingerprints(page)
       .then((data) => {
         let showList = data && data.length > 0;
         this.setState({
           fingerprints: data,
           showList: showList,
           showSpinner: false,
+          currentPage: page,
         });
       })
       .catch((error) => alert(error.message));
@@ -176,7 +180,12 @@ class Fingerprints extends React.Component<
   };
 
   refreshPage = () => {
-    this.loadData();
+    this.loadData(this.state.currentPage);
+  };
+
+  handleChange = (event: React.ChangeEvent<unknown>, page: number) => {
+    console.log("Page: " + page);
+    this.loadData(page - 1);
   };
 
   render() {
@@ -223,65 +232,77 @@ class Fingerprints extends React.Component<
                 </TableHead>
 
                 {this.state.showList && (
-                  <TableBody>
-                    {this.state.fingerprints.map((row: FingerprintModel) => (
-                      <StyledTableRow key={row.id}>
-                        <StyledTableCell component="th" scope="row">
-                          {row.id}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {row.type}
-                        </StyledTableCell>
-                        <StyledTableCell>{row.name}</StyledTableCell>
-                        {/* <StyledTableCell align="right">
+                  <>
+                    <TableBody>
+                      {this.state.fingerprints.map((row: FingerprintModel) => (
+                        <StyledTableRow key={row.id}>
+                          <StyledTableCell component="th" scope="row">
+                            {row.id}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {row.type}
+                          </StyledTableCell>
+                          <StyledTableCell>{row.name}</StyledTableCell>
+                          {/* <StyledTableCell align="right">
                           {row.description.substring(0, 20)+ '...'}
                         </StyledTableCell> */}
-                        <StyledTableCell align="left">
-                          {row.info}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {this.formatDate(row.date_created)}
-                        </StyledTableCell>
-                        <StyledTableCell align="left">
-                          {this.formatDate(row.date_updated)}
-                        </StyledTableCell>
-                        <StyledTableCell>
-                          <Grid container>
-                            <Grid item xs={6}>
-                              <FormDialog
-                                model={row}
-                                variant={"text"}
-                                isEditMode
-                                submitCancelCallback={(status: boolean) => {
-                                  if (status) {
-                                    this.refreshPage();
-                                  }
-                                }}
-                              >
-                                {/* Sending icon as children */}
-                                <EditIcon color="secondary" aria-label="edit" />
-                              </FormDialog>
+                          <StyledTableCell align="left">
+                            {row.info}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {this.formatDate(row.date_created)}
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            {this.formatDate(row.date_updated)}
+                          </StyledTableCell>
+                          <StyledTableCell>
+                            <Grid container>
+                              <Grid item xs={6}>
+                                <FormDialog
+                                  model={row}
+                                  variant={"text"}
+                                  isEditMode
+                                  submitCancelCallback={(status: boolean) => {
+                                    if (status) {
+                                      this.refreshPage();
+                                    }
+                                  }}
+                                >
+                                  {/* Sending icon as children */}
+                                  <EditIcon
+                                    color="secondary"
+                                    aria-label="edit"
+                                  />
+                                </FormDialog>
+                              </Grid>
+                              <Grid item xs={6}>
+                                <IconButton
+                                  aria-label="delete"
+                                  color="secondary"
+                                  onClick={() => this.handleDelete(row.id)}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </Grid>
                             </Grid>
-                            <Grid item xs={6}>
-                              <IconButton
-                                aria-label="delete"
-                                color="secondary"
-                                onClick={() => this.handleDelete(row.id)}
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </Grid>
-                          </Grid>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    ))}
-                  </TableBody>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      ))}
+                    </TableBody>
+                  </>
                 )}
               </Table>
               {!this.state.showList && (
                 <Typography style={{ alignSelf: "center" }}>
                   No data available right now.
                 </Typography>
+              )}
+              {!this.state.showList && (
+                <Pagination
+                  count={10}
+                  page={this.state.currentPage + 1}
+                  onChange={this.handleChange}
+                />
               )}
             </Grid>
           )}

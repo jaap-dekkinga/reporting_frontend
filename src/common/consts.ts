@@ -24,7 +24,6 @@ export enum interestActions {
   "shared" = "shared",
 }
 
-
 export const API = {
   getTuneUrlIDs:
     "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getTuneURL_IDs",
@@ -39,9 +38,8 @@ export const API = {
   deleteFingerprintURL:
     "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/delete-fingerprint?id=",
   getFingerprintsURL:
-    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/get-fingerprint?limit=50&offset=0",
-  typesURL:
-    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/type"
+    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/get-fingerprint?limit=10&offset=[PAGE]",
+  typesURL: "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/type",
 };
 
 export const drawerWidth = 240;
