@@ -93,20 +93,33 @@ class Fingerprints extends React.Component<
         : "asc"
       : "desc";
     const sortedData = this.state.fingerprints.sort((a, b) => {
-      if (column === "name" || column === "type") {
-        const nameA = a.name.toUpperCase(); // ignore upper and lowercase
-        const nameB = b.name.toUpperCase(); // ignore upper and lowercase
-        if (nameA < nameB) {
+      let item1, item2;
+      if(column === "id"){
+        return a.id - b.id;
+      } else {
+      if(column === "date_created"){
+        item1 = new Date(a.date_created).getTime();
+        item2 = new Date(b.date_created).getTime();
+      } else if(column === "date_updated"){
+        item1 = new Date(a.date_updated).getTime();
+        item2 = new Date(b.date_updated).getTime();
+      } else if(column === "type"){
+        item1 = a.type.toUpperCase();
+        item2 = a.type.toUpperCase();
+      } else {
+        item1 = a.name.toUpperCase(); 
+        item2 = b.name.toUpperCase();
+      }
+
+        if (item1 < item2) {
           return -1;
         }
-        if (nameA > nameB) {
+        if (item1 > item2) {
           return 1;
         }
 
         // names must be equal
         return 0;
-      } else {
-        return a.id - b.id;
       }
     });
 
@@ -221,15 +234,19 @@ class Fingerprints extends React.Component<
                       ID <span className={this.setArrow("id")}></span>
                     </StyledTableCell>
                     <StyledTableCell onClick={this.onSort("type")}>
-                      Type
+                      Type <span className={this.setArrow("type")}></span>
                     </StyledTableCell>
                     <StyledTableCell onClick={this.onSort("name")}>
                       Name <span className={this.setArrow("name")}></span>
                     </StyledTableCell>
                     {/* <StyledTableCell>Description</StyledTableCell> */}
                     <StyledTableCell>Info</StyledTableCell>
-                    <StyledTableCell>Created On</StyledTableCell>
-                    <StyledTableCell>Update On</StyledTableCell>
+                    <StyledTableCell onClick={this.onSort("date_created")}>
+                      Created On <span className={this.setArrow("date_created")}></span>
+                    </StyledTableCell>
+                    <StyledTableCell onClick={this.onSort("date_updated")}>
+                      Update On <span className={this.setArrow("date_updated")}></span>
+                    </StyledTableCell>
                     <StyledTableCell>Action</StyledTableCell>
                   </StyledTableRow>
                 </TableHead>
@@ -282,7 +299,7 @@ class Fingerprints extends React.Component<
                                 <IconButton
                                   aria-label="delete"
                                   color="secondary"
-                                  onClick={() => this.handleDelete(row.id)}
+                                  onClick={() => {if(window.confirm('Are you sure to delete this record?')){ this.handleDelete(row.id)};}}
                                 >
                                   <DeleteIcon />
                                 </IconButton>
