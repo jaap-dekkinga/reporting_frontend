@@ -1,4 +1,4 @@
-const devMode = true; //process.env.NODE_ENV === "development" ? true : false;
+const devMode = process.env.NODE_ENV === "development" ? true : false;
 /**
  * Is Authentication required
  */
