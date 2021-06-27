@@ -1,5 +1,5 @@
 import { FingerprintModel, FingerprintsData } from "../types/FingerprintModel";
-import { API } from "../common/consts";
+import { API, initialState } from "../common/consts";
 
 /// returns the type of fingerprints
 export const getFingerprintTypes = async (): Promise<any> => {
@@ -30,8 +30,9 @@ export const createFingerprint = async (
   formData.append("description", data.description);
   formData.append("type", data.type);
   formData.append("info", data.info);
-  // formData.append("id", data.id.toString());
   formData.append("url", data.url);
+
+  formData.append("UID", initialState.authorization.uid ?? "");
 
   let response = await fetch(API.createFingerprintURL, {
     method: "POST",
@@ -69,6 +70,7 @@ export const updateFingerprint = async (
   formData.append("info", data.info);
   formData.append("id", data.id.toString());
   formData.append("url", data.url);
+  formData.append("UID", initialState.authorization.uid ?? "");
 
   let response = await fetch(API.updateFingerprintURL, {
     method: "POST",
@@ -85,10 +87,16 @@ export const updateFingerprint = async (
 //delete
 export const deleteFingerprint = async (id: string): Promise<any> => {
   // setShowSpinner(true);
-  let response = await fetch(API.deleteFingerprintURL + id, {
-    method: "GET",
-    mode: "cors",
-  }).then(handleErrors);
+  let response = await fetch(
+    API.deleteFingerprintURL +
+      id +
+      "?" +
+      new URLSearchParams({ uid: initialState.authorization.uid as string }),
+    {
+      method: "GET",
+      mode: "cors",
+    }
+  ).then(handleErrors);
   let result = await response.json().then((data) => {
     return data;
   });
@@ -102,6 +110,10 @@ export const getFingerprints = async (
 ): Promise<FingerprintsData> => {
   console.log("Get Fingerprint");
   let url = API.getFingerprintsURL.replace("[PAGE]", page.toString());
+  url =
+    url +
+    "&" +
+    new URLSearchParams({ uid: initialState.authorization.uid as string });
   console.log(url);
   let response = await fetch(url, {
     method: "GET",

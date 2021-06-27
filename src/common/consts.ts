@@ -24,22 +24,18 @@ export enum interestActions {
   "shared" = "shared",
 }
 
+// const base_url = "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/"; // prod
+const base_url = "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/"; // dev
+
 export const API = {
-  getTuneUrlIDs:
-    "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getTuneURL_IDs",
-  getGraphData:
-    "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getGraphData",
-  getTop10minuties:
-    "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/getTop10minuties",
-  createFingerprintURL:
-    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/create-fingerprint",
-  updateFingerprintURL:
-    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/update-fingerprint",
-  deleteFingerprintURL:
-    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/delete-fingerprint?id=",
-  getFingerprintsURL:
-    "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/get-fingerprint?limit=10&offset=[PAGE]",
-  typesURL: "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/type",
+  getTuneUrlIDs: base_url + "getTuneURL_IDs",
+  getGraphData: base_url + "getGraphData",
+  getTop10minuties: base_url + "getTop10minuties",
+  createFingerprintURL: base_url + "create-fingerprint",
+  updateFingerprintURL: base_url + "update-fingerprint",
+  deleteFingerprintURL: base_url + "delete-fingerprint?id=",
+  getFingerprintsURL: base_url + "get-fingerprint?limit=10&offset=[PAGE]",
+  typesURL: base_url + "type",
 };
 
 export const drawerWidth = 240;
