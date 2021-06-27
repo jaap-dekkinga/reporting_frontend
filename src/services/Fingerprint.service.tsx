@@ -1,5 +1,10 @@
 import { FingerprintModel, FingerprintsData } from "../types/FingerprintModel";
 import { API, initialState } from "../common/consts";
+import { useSelector } from "react-redux";
+
+const uid = useSelector(
+  (state: typeof initialState) => state.authorization.uid
+);
 
 /// returns the type of fingerprints
 export const getFingerprintTypes = async (): Promise<any> => {
@@ -32,7 +37,7 @@ export const createFingerprint = async (
   formData.append("info", data.info);
   formData.append("url", data.url);
 
-  formData.append("UID", initialState.authorization.uid ?? "");
+  formData.append("UID", uid ?? "");
 
   let response = await fetch(API.createFingerprintURL, {
     method: "POST",
@@ -70,7 +75,7 @@ export const updateFingerprint = async (
   formData.append("info", data.info);
   formData.append("id", data.id.toString());
   formData.append("url", data.url);
-  formData.append("UID", initialState.authorization.uid ?? "");
+  formData.append("UID", uid ?? "");
 
   let response = await fetch(API.updateFingerprintURL, {
     method: "POST",
@@ -91,7 +96,7 @@ export const deleteFingerprint = async (id: string): Promise<any> => {
     API.deleteFingerprintURL +
       id +
       "?" +
-      new URLSearchParams({ uid: initialState.authorization.uid as string }),
+      new URLSearchParams({ uid: uid as string }),
     {
       method: "GET",
       mode: "cors",
@@ -110,10 +115,7 @@ export const getFingerprints = async (
 ): Promise<FingerprintsData> => {
   console.log("Get Fingerprint");
   let url = API.getFingerprintsURL.replace("[PAGE]", page.toString());
-  url =
-    url +
-    "&" +
-    new URLSearchParams({ uid: initialState.authorization.uid as string });
+  url = url + "&" + new URLSearchParams({ uid: uid as string });
   console.log(url);
   let response = await fetch(url, {
     method: "GET",
