@@ -24,13 +24,13 @@ export enum interestActions {
   "shared" = "shared",
 }
 
-// const base_url = "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/"; // prod
+const base_url1 = "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/"; // prod
 const base_url = "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/"; // dev
 
 export const API = {
-  getTuneUrlIDs: base_url + "getTuneURL_IDs",
-  getGraphData: base_url + "getGraphData",
-  getTop10minuties: base_url + "getTop10minuties",
+  getTuneUrlIDs: base_url1 + "getTuneURL_IDs",
+  getGraphData: base_url1 + "getGraphData",
+  getTop10minuties: base_url1 + "getTop10minuties",
   createFingerprintURL: base_url + "create-fingerprint",
   updateFingerprintURL: base_url + "update-fingerprint",
   deleteFingerprintURL: base_url + "delete-fingerprint?id=",
