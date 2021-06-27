@@ -1,10 +1,8 @@
 import { FingerprintModel, FingerprintsData } from "../types/FingerprintModel";
-import { API, initialState } from "../common/consts";
-import { useSelector } from "react-redux";
+import { API } from "../common/consts";
+import store from "../store";
 
-const uid = useSelector(
-  (state: typeof initialState) => state.authorization.uid
-);
+const uid = store.getState().authorization.uid;
 
 /// returns the type of fingerprints
 export const getFingerprintTypes = async (): Promise<any> => {
