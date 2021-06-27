@@ -35,7 +35,7 @@ export const createFingerprint = async (
   formData.append("info", data.info);
   formData.append("url", data.url);
 
-  formData.append("UID", uid ?? "");
+  formData.append("uid", uid ?? "");
 
   let response = await fetch(API.createFingerprintURL, {
     method: "POST",
@@ -74,7 +74,7 @@ export const updateFingerprint = async (
   formData.append("info", data.info);
   formData.append("id", data.id.toString());
   formData.append("url", data.url);
-  formData.append("UID", uid ?? "");
+  formData.append("uid", uid ?? "");
 
   let response = await fetch(API.updateFingerprintURL, {
     method: "POST",
