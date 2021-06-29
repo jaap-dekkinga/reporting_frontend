@@ -45,7 +45,9 @@ export type FingerprintsData = {
 export type FingerprintState = {
   types: FingerprintType[];
   fingerprint: FingerprintModel;
+  fingerprintdata:Blob;
   isDialogOpen: boolean;
+  isDownloadOpen: boolean;
   showSpinner: boolean;
   filename: string;
   errors: {

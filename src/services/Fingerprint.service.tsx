@@ -42,13 +42,17 @@ export const createFingerprint = async (
     mode: "cors",
     body: formData,
   }).then(handleErrors);
-
-  let result = await response.json().then((data) => {
-    console.log(data);
-    return data;
-  });
-
-  return result;
+  // const resp = await response;
+  // // console.log(response)
+  // console.log(resp)
+  //   console.log(await resp.json())
+  
+  // let result = await response.json().then((data) => {
+  //   console.log(JSON.parse(data));
+  //   return data;
+  // });
+// console.log(result)
+  return response;
 };
 
 const handleErrors = (response: Response) => {
@@ -130,4 +134,24 @@ console.log("uid ", uid);
   });
 
   return result;
+};
+
+export const getAllFingerPrints = async (): Promise<any> => {
+  const uid = store.getState().authorization.uid;
+  console.log("uid ", uid);
+    console.log("Get Fingerprint");
+    // let url = API.getAllFingerprintsURL.replace("[PAGE]", page.toString());
+  let  url = API.getAllFingerprintsURL + "&" + new URLSearchParams({ uid: uid as string });
+    console.log(url);
+  let response = await fetch(url, {
+    method: "GET",
+    mode: "cors",
+  }).then(handleErrors);
+
+  let result = await response.json().then((data) => {
+    return data;
+  });
+
+  return result;
+  // }
 };
