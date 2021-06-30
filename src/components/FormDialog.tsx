@@ -1,5 +1,8 @@
 import React, { ChangeEvent } from "react";
 import { createStyles, withStyles, Theme } from "@material-ui/core/styles";
+import {Link} from 'react-router-dom'
+
+import fileDownload from 'js-file-download'
 
 import {
   Button,
@@ -12,7 +15,6 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-
 import {
   FingerprintModel,
   FingerprintProps,
@@ -22,9 +24,12 @@ import {
 import {
   createFingerprint,
   getFingerprintTypes,
+  getFingerprints,
   updateFingerprint,
+  getAllFingerPrints
 } from "../services/Fingerprint.service";
 import { FormHelperText } from "@material-ui/core";
+import { letterSpacing } from "@material-ui/system";
 
 /**
  * Dialog to show the form to create fingerprint
@@ -46,6 +51,7 @@ const styles = (theme: Theme) =>
 class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   state: FingerprintState = {
     types: [],
+    
     fingerprint: {
       id: 0,
       name: "",
@@ -54,10 +60,13 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       info: "",
       date_created: "",
       date_updated: "",
+
       url: "sample.mp3",
     },
     filename: "",
     isDialogOpen: false,
+    isDownloadOpen: false,
+    fingerprintdata:new Blob,
     showSpinner: false,
     errors: {
       name: "",
@@ -72,8 +81,10 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   initialState!: FingerprintState;
 
   constructor(props: FingerprintProps) {
+    
     super(props);
     this.initialState = this.state;
+    
   }
 
   handleClickOpen = () => {
@@ -89,6 +100,12 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
     });
     this.props.submitCancelCallback && this.props.submitCancelCallback(true);
   };
+
+  handleDownload = () =>{
+    
+    fileDownload(this.state.fingerprintdata,"TuneURL-"+ this.isFileName);
+    this.setState({isDownloadOpen:true})
+  }
 
   handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -120,14 +137,16 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
     });
   };
 
-  private manageUploadedFile = (binary: String, file: File) => {
+  private manageUploadedFile = async(binary: String, file: File) => {
     // do what you need with your file (fetch POST, ect ....)
     console.log(`The file size is ${binary.length}`);
     console.log(`The file name is ${file.name}`);
+    this.isFileName = file.name;
+  
 
     this.isFingerprintChanged = true;
 
-    this.setState({
+    await this.setState({
       ...this.state,
       filename: file.name,
       fingerprint: {
@@ -135,6 +154,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
         fingerprint: file,
       },
     });
+      
   };
 
   handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -155,11 +175,13 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   };
 
   isFingerprintChanged = false;
+  isFileName = "";
 
   handleAdd = (event: React.FormEvent<HTMLButtonElement>) => {
+    console.log(event.target)
     event.preventDefault();
 
-    console.log(this.state.fingerprint);
+    console.log(this.state);
     this.setState({
       ...this.state,
       showSpinner: true,
@@ -205,14 +227,19 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
     } else {
       let res = createFingerprint(this.state.fingerprint);
       res
-        .then((data) => {
+        .then(async (data) => {
           this.setState({
             ...this.initialState,
             isDialogOpen: false,
             showSpinner: false,
           });
-          this.props.submitCancelCallback &&
-            this.props.submitCancelCallback(true);
+          const blobdata = await data.blob();
+          console.log(blobdata)
+      this.setState({fingerprintdata:blobdata})
+    
+           this.setState({isDownloadOpen:true})
+          // this.props.submitCancelCallback &&
+            // this.props.submitCancelCallback(true);
         })
         .catch((error) => {
           // show error alert
@@ -220,7 +247,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             ...this.state,
             showSpinner: false,
           });
-          alert(error.message);
+          alert(error.message + "from here");
         });
     }
   };
@@ -290,7 +317,11 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       });
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    // const fingerprints  = await getFingerprints(1)
+// console.log( fingerprints)
+ 
+
     // set state if model in props available.
     if (this.props.isEditMode && this.props.model) {
       this.setState({
@@ -340,6 +371,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             <DialogContent>
               <form>
                 <Grid container direction="column">
+				 { !isEditMode && (
                   <Grid item>
                     <label htmlFor="btn-upload">
                       <input
@@ -368,6 +400,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                     </div>
                     {errors.fingerprint && this.renderError(errors.fingerprint)}
                   </Grid>
+				   )}
                   <Grid item>
                     <TextField
                       id="type"
@@ -439,12 +472,60 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
               <Button onClick={this.handleClose} color="primary">
                 Cancel
               </Button>
-              <Button onClick={this.handleAdd} color="primary">
+              <Button onClick={this.handleAdd}  color="primary">
                 {isEditMode ? "Update" : "Create"}
               </Button>
             </DialogActions>
+            
           </>
         </Dialog>
+
+
+
+
+
+
+        <Dialog
+          open={this.state.isDownloadOpen}
+          onClose={this.handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          {this.state.showSpinner && (
+            <CircularProgress
+              style={{ margin: 10 }}
+              color="secondary"
+              size={20}
+            />
+          )}
+          <>
+            <DialogTitle id="form-dialog-title">TuneURL-{this.isFileName} created</DialogTitle>
+            <DialogContent>
+              <label>Please use this TuneURL in your program to trigger your call-to-action.</label>
+                      <br/>
+                       <Button
+                        className="btn-choose"
+                        variant="outlined"
+                        component="span"
+                        onClick={this.handleDownload}
+                      >
+Download Now
+                      </Button> 
+          
+          {/* <a href={this. target="_blank" download = "song.mp3">Download Now</a> */}
+
+
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleClose} color="primary">
+              Close Now
+              </Button>
+              
+            </DialogActions>
+            
+          </>
+        </Dialog>
+
+
       </>
     );
   }

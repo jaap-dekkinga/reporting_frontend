@@ -24,8 +24,8 @@ export enum interestActions {
   "shared" = "shared",
 }
 
-const base_url1 = "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/"; // prod
-const base_url = "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/"; // dev
+const base_url1 = "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/";
+const base_url = "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/";
 
 export const API = {
   getTuneUrlIDs: base_url1 + "getTuneURL_IDs",
@@ -35,6 +35,7 @@ export const API = {
   updateFingerprintURL: base_url + "update-fingerprint",
   deleteFingerprintURL: base_url + "delete-fingerprint?id=",
   getFingerprintsURL: base_url + "get-fingerprint?limit=10&offset=[PAGE]",
+  getAllFingerprintsURL: base_url + "get-fingerprint",
   typesURL: base_url + "type",
 };
 

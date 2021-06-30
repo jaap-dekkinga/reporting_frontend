@@ -26,6 +26,7 @@ import {
 } from "../types/FingerprintModel";
 import {
   deleteFingerprint,
+  
   getFingerprints,
 } from "../services/Fingerprint.service";
 
@@ -150,6 +151,8 @@ class Fingerprints extends React.Component<
       ...this.state,
       showSpinner: true,
     });
+
+
     getFingerprints(page)
       .then((data) => {
         let showList = data && data.data.length > 0;

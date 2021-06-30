@@ -2,7 +2,6 @@ import { FingerprintModel, FingerprintsData } from "../types/FingerprintModel";
 import { API } from "../common/consts";
 import store from "../store";
 
-const uid = store.getState().authorization.uid;
 
 /// returns the type of fingerprints
 export const getFingerprintTypes = async (): Promise<any> => {
@@ -25,6 +24,7 @@ export const createFingerprint = async (
 ): Promise<any> => {
   // setShowSpinner(true);
   const formData = new FormData();
+  const uid = store.getState().authorization.uid;
 
   if (undefined !== data.fingerprint || null !== data.fingerprint) {
     formData.append("mp3file", data.fingerprint!);
@@ -35,20 +35,24 @@ export const createFingerprint = async (
   formData.append("info", data.info);
   formData.append("url", data.url);
 
-  formData.append("UID", uid ?? "");
+  formData.append("uid", uid ?? "");
 
   let response = await fetch(API.createFingerprintURL, {
     method: "POST",
     mode: "cors",
     body: formData,
   }).then(handleErrors);
-
-  let result = await response.json().then((data) => {
-    console.log(data);
-    return data;
-  });
-
-  return result;
+  // const resp = await response;
+  // // console.log(response)
+  // console.log(resp)
+  //   console.log(await resp.json())
+  
+  // let result = await response.json().then((data) => {
+  //   console.log(JSON.parse(data));
+  //   return data;
+  // });
+// console.log(result)
+  return response;
 };
 
 const handleErrors = (response: Response) => {
@@ -63,6 +67,7 @@ export const updateFingerprint = async (
   data: FingerprintModel
 ): Promise<any> => {
   const formData = new FormData();
+  const uid = store.getState().authorization.uid;
 
   if (undefined !== data.fingerprint || null !== data.fingerprint) {
     formData.append("mp3file", data.fingerprint!);
@@ -73,7 +78,7 @@ export const updateFingerprint = async (
   formData.append("info", data.info);
   formData.append("id", data.id.toString());
   formData.append("url", data.url);
-  formData.append("UID", uid ?? "");
+  formData.append("uid", uid ?? "");
 
   let response = await fetch(API.updateFingerprintURL, {
     method: "POST",
@@ -90,6 +95,8 @@ export const updateFingerprint = async (
 //delete
 export const deleteFingerprint = async (id: string): Promise<any> => {
   // setShowSpinner(true);
+  const uid = store.getState().authorization.uid;
+
   let response = await fetch(
     API.deleteFingerprintURL +
       id +
@@ -111,6 +118,8 @@ export const deleteFingerprint = async (id: string): Promise<any> => {
 export const getFingerprints = async (
   page: number
 ): Promise<FingerprintsData> => {
+  const uid = store.getState().authorization.uid;
+console.log("uid ", uid);
   console.log("Get Fingerprint");
   let url = API.getFingerprintsURL.replace("[PAGE]", page.toString());
   url = url + "&" + new URLSearchParams({ uid: uid as string });
@@ -125,4 +134,24 @@ export const getFingerprints = async (
   });
 
   return result;
+};
+
+export const getAllFingerPrints = async (): Promise<any> => {
+  const uid = store.getState().authorization.uid;
+  console.log("uid ", uid);
+    console.log("Get Fingerprint");
+    // let url = API.getAllFingerprintsURL.replace("[PAGE]", page.toString());
+  let  url = API.getAllFingerprintsURL + "&" + new URLSearchParams({ uid: uid as string });
+    console.log(url);
+  let response = await fetch(url, {
+    method: "GET",
+    mode: "cors",
+  }).then(handleErrors);
+
+  let result = await response.json().then((data) => {
+    return data;
+  });
+
+  return result;
+  // }
 };
