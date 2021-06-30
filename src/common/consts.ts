@@ -24,8 +24,8 @@ export enum interestActions {
   "shared" = "shared",
 }
 
-const base_url1 = "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/"; // prod
-const base_url = "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/"; // dev
+const base_url1 = "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/";
+const base_url = "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/";
 
 export const API = {
   getTuneUrlIDs: base_url1 + "getTuneURL_IDs",
