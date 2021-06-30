@@ -354,6 +354,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             <DialogContent>
               <form>
                 <Grid container direction="column">
+                  { !isEditMode && (
                   <Grid item>
                     <label htmlFor="btn-upload">
                       <input
@@ -382,6 +383,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                     </div>
                     {errors.fingerprint && this.renderError(errors.fingerprint)}
                   </Grid>
+                  )}
                   <Grid item>
                     <TextField
                       id="type"

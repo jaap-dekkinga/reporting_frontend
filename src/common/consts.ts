@@ -35,6 +35,7 @@ export const API = {
   updateFingerprintURL: base_url + "update-fingerprint",
   deleteFingerprintURL: base_url + "delete-fingerprint?id=",
   getFingerprintsURL: base_url + "get-fingerprint?limit=10&offset=[PAGE]",
+  getAllFingerprintsURL: base_url + "get-fingerprint",
   typesURL: base_url + "type",
 };
 
