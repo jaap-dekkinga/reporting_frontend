@@ -1,7 +1,8 @@
 import React, { ChangeEvent } from "react";
 import { createStyles, withStyles, Theme } from "@material-ui/core/styles";
-import {Link} from 'react-router-dom';
-import fileDownload from 'js-file-download';
+import {Link} from 'react-router-dom'
+
+import fileDownload from 'js-file-download'
 
 import {
   Button,
@@ -50,6 +51,7 @@ const styles = (theme: Theme) =>
 class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   state: FingerprintState = {
     types: [],
+    
     fingerprint: {
       id: 0,
       name: "",
@@ -58,9 +60,10 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       info: "",
       date_created: "",
       date_updated: "",
+
       url: "sample.mp3",
     },
-    filename: "",
+    filename: "unknown",
     isDialogOpen: false,
     isDownloadOpen: false,
     fingerprintdata:new Blob,
@@ -78,8 +81,10 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   initialState!: FingerprintState;
 
   constructor(props: FingerprintProps) {
+    
     super(props);
     this.initialState = this.state;
+    
   }
 
   handleClickOpen = () => {
@@ -97,7 +102,8 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   };
 
   handleDownload = () =>{
-    fileDownload(this.state.fingerprintdata, "TuneURL-"+ this.state.filename + ".mp3")
+    
+    fileDownload(this.state.fingerprintdata,"TuneURL-"+ this.isFileName);
     this.setState({isDownloadOpen:true})
   }
 
@@ -131,14 +137,16 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
     });
   };
 
-  private manageUploadedFile = (binary: String, file: File) => {
+  private manageUploadedFile = async(binary: String, file: File) => {
     // do what you need with your file (fetch POST, ect ....)
     console.log(`The file size is ${binary.length}`);
     console.log(`The file name is ${file.name}`);
+    this.isFileName = file.name;
+  
 
     this.isFingerprintChanged = true;
 
-    this.setState({
+    await this.setState({
       ...this.state,
       filename: file.name,
       fingerprint: {
@@ -146,6 +154,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
         fingerprint: file,
       },
     });
+      
   };
 
   handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -166,11 +175,13 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   };
 
   isFingerprintChanged = false;
+  isFileName = "";
 
   handleAdd = (event: React.FormEvent<HTMLButtonElement>) => {
+    console.log(event.target)
     event.preventDefault();
 
-    console.log(this.state.fingerprint);
+    console.log(this.state);
     this.setState({
       ...this.state,
       showSpinner: true,
@@ -227,6 +238,8 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       this.setState({fingerprintdata:blobdata})
     
            this.setState({isDownloadOpen:true})
+          // this.props.submitCancelCallback &&
+            // this.props.submitCancelCallback(true);
         })
         .catch((error) => {
           // show error alert
@@ -305,6 +318,10 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   };
 
   async componentDidMount() {
+    // const fingerprints  = await getFingerprints(1)
+// console.log( fingerprints)
+ 
+
     // set state if model in props available.
     if (this.props.isEditMode && this.props.model) {
       this.setState({
@@ -354,7 +371,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             <DialogContent>
               <form>
                 <Grid container direction="column">
-                  { !isEditMode && (
+				 { !isEditMode && (
                   <Grid item>
                     <label htmlFor="btn-upload">
                       <input
@@ -383,7 +400,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                     </div>
                     {errors.fingerprint && this.renderError(errors.fingerprint)}
                   </Grid>
-                  )}
+				   )}
                   <Grid item>
                     <TextField
                       id="type"
@@ -463,6 +480,11 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
           </>
         </Dialog>
 
+
+
+
+
+
         <Dialog
           open={this.state.isDownloadOpen}
           onClose={this.handleClose}
@@ -476,18 +498,18 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             />
           )}
           <>
-            <DialogTitle id="form-dialog-title">TuneURL-{this.state.filename} created</DialogTitle>
+            <DialogTitle id="form-dialog-title">TuneURL-{this.isFileName} created</DialogTitle>
             <DialogContent>
               <label>Please use this TuneURL in your program to trigger your call-to-action.</label>
                       <br/>
-              <Button
-              className="btn-choose"
-              variant="outlined"
-              component="span"
-              onClick={this.handleDownload}
-            >
-              Download Now
-          </Button> 
+                       <Button
+                        className="btn-choose"
+                        variant="outlined"
+                        component="span"
+                        onClick={this.handleDownload}
+                      >
+Download Now
+                      </Button> 
           
           {/* <a href={this. target="_blank" download = "song.mp3">Download Now</a> */}
 
@@ -502,6 +524,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             
           </>
         </Dialog>
+
 
       </>
     );
