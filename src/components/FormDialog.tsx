@@ -367,7 +367,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             />
           )}
           <>
-            <DialogTitle id="form-dialog-title">new TuneURL</DialogTitle>
+            <DialogTitle id="form-dialog-title"> {isEditMode ? "Edit " : "New "} TuneURL</DialogTitle>
             <DialogContent>
               <form>
                 <Grid container direction="column">
