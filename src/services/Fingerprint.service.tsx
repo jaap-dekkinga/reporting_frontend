@@ -56,7 +56,10 @@ export const createFingerprint = async (
 };
 
 const handleErrors = (response: Response) => {
-  if (!response.ok) {
+  console.log(" response ", response);
+  if(!response.ok && response.status == 409){
+    throw Error("Error: the audio you selected is too similar to an existing TuneURL");
+  } else if (!response.ok) {
     throw Error("Some error occured");
   }
   return response;

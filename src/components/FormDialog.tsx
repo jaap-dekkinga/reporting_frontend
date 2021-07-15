@@ -247,7 +247,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             ...this.state,
             showSpinner: false,
           });
-          alert(error.message + "from here");
+          alert(error.message);
         });
     }
   };
