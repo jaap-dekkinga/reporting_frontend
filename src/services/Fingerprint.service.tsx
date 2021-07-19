@@ -103,7 +103,7 @@ export const deleteFingerprint = async (id: string): Promise<any> => {
   let response = await fetch(
     API.deleteFingerprintURL +
       id +
-      "?" +
+      "&" +
       new URLSearchParams({ uid: uid as string }),
     {
       method: "GET",
