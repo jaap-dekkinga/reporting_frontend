@@ -57,8 +57,11 @@ export const createFingerprint = async (
 
 const handleErrors = (response: Response) => {
   console.log(" response ", response);
+  console.log(" response.statusText ", response.statusText);
   if(!response.ok && response.status == 409){
     throw Error("Error: the audio you selected is too similar to an existing TuneURL");
+  } if(!response.ok && response.status == 422){
+    throw Error("Error: This Poll already exist");
   } else if (!response.ok) {
     throw Error("Some error occured");
   }

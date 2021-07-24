@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from "react";
 import { createStyles, withStyles, Theme } from "@material-ui/core/styles";
 import {Link} from 'react-router-dom'
-
+import InfoIcon from "@material-ui/icons/Info";
 import fileDownload from 'js-file-download'
 
 import {
@@ -10,6 +10,7 @@ import {
   Grid,
   TextField,
   CircularProgress,
+  Tooltip,
 } from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -26,10 +27,11 @@ import {
   getFingerprintTypes,
   getFingerprints,
   updateFingerprint,
-  getAllFingerPrints
+  getAllFingerPrints,
 } from "../services/Fingerprint.service";
 import { FormHelperText } from "@material-ui/core";
 import { letterSpacing } from "@material-ui/system";
+import { info } from "console";
 
 /**
  * Dialog to show the form to create fingerprint
@@ -51,7 +53,10 @@ const styles = (theme: Theme) =>
 class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   state: FingerprintState = {
     types: [],
-    
+    typeVal:
+    "Capture in 'Type' the destination info based on TuneURL type. For example phone number or website.",
+    descType:
+    "Capture in 'Description' the additional information. Some TuneURL types require description information, i.e., sms.",
     fingerprint: {
       id: 0,
       name: "",
@@ -66,14 +71,14 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
     filename: "",
     isDialogOpen: false,
     isDownloadOpen: false,
-    fingerprintdata:new Blob,
+    fingerprintdata:new Blob(),
     showSpinner: false,
     errors: {
       name: "",
       fingerprint: "",
       info: "",
       type: "",
-
+      description: "",
       status: false,
     },
   };
@@ -111,9 +116,39 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
     const { name, value } = e.target;
 
     console.log(e.target.value);
+    let msg;
+    switch (value) {
+      case "save_page":
+        msg =
+          "Capture in 'Type' the website you want your listeners to visit. The URL can be a deep link and include UTM parameters.";
+        break;
+      case "open_page":
+        msg =
+          "Capture in 'Type' the website you want your listeners to visit. The URL can be a deep link and include UTM parameters.";
+        break;
+      case "phone":
+        msg =
+          "Capture in 'Type' the phone number you want your listeners to call.";
+        break;
+      case "sms":
+        msg =
+          "Capture in 'Type' the phone number you want your listeners to text. And capture in 'description' the message the text message should have.";
+        break;
+      case "poll":
+        msg = "Capture in 'Type' an unique identifier for your poll.";
+        break;
+      case "coupon":
+        msg =
+          "Capture in 'Type' the URL of the coupon you want your listeners to save.";
+        break;
+      default:
+        msg = "";
+        break;
+    }
     this.isFingerprintChanged = true;
     this.setState({
       ...this.state,
+      typeVal: msg,
       fingerprint: {
         ...this.state.fingerprint,
         [name]: value || "",
@@ -260,11 +295,66 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       fingerprint: "",
       info: "",
       type: "",
-
+      description: "",
       status: false,
     };
 
-    let { name, type, info, fingerprint } = this.state.fingerprint;
+    let { name, type, info, fingerprint, description } = this.state.fingerprint;
+    if (!this.props.isEditMode) {
+      let valid;
+      switch (type) {
+        case "save_page":
+          valid = /^(http|https):\/\/[^ "]+$/.test(info);
+          if (!valid) {
+            errors.info = "Please enter valid URL with http/https.";
+            errors.status = true;
+          }
+          break;
+        case "open_page":
+          valid = /^(http|https):\/\/[^ "]+$/.test(info);
+          if (!valid) {
+            errors.info = "Please enter valid URL with http/https.";
+            errors.status = true;
+          }
+          break;
+        case "phone":
+          valid =
+            /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(
+              info
+            );
+          if (!valid) {
+            errors.info = "Please enter valid phone number";
+            errors.status = true;
+          }
+          break;
+        case "sms":
+          valid =
+            /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(
+              info
+            );
+          if (!valid) {
+            errors.info = "Please enter valid phone number";
+            errors.status = true;
+          }
+          if(!description){
+            errors.description = "Description can not be empty";
+            errors.status = true;
+          }
+          break;
+        case "poll":
+          break;
+        case "coupon":
+          valid = /^(http|https):\/\/[^ "]+$/.test(info);
+          if (!valid) {
+            errors.info = "Please enter valid URL with http/https.";
+            errors.status = true;
+          }
+          break;
+        default:
+          break;
+      }
+    }
+
     if (fingerprint === undefined || fingerprint === null) {
       errors.fingerprint = "Please select TuneURL file.";
       errors.status = true;
@@ -449,6 +539,13 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                       fullWidth
                       required
                       onChange={this.handleChange}
+                      InputProps={{
+                        endAdornment: (
+                          <Tooltip title={this.state.typeVal}>
+                            <InfoIcon></InfoIcon>
+                          </Tooltip>
+                        ),
+                      }}
                     />
                     {errors.info && this.renderError(errors.info)}
                   </Grid>
@@ -463,7 +560,15 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                       value={this.state.fingerprint.description}
                       fullWidth
                       onChange={this.handleChange}
+                      InputProps={{
+                        endAdornment: !this.state.fingerprint.type && (
+                          <Tooltip title={this.state.descType}>
+                            <InfoIcon></InfoIcon>
+                          </Tooltip>
+                        ),
+                      }}
                     />
+                    {errors.description && this.renderError(errors.description)}
                   </Grid>
                 </Grid>
               </form>

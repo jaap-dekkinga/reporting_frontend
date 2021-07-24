@@ -50,12 +50,14 @@ export type FingerprintState = {
   isDownloadOpen: boolean;
   showSpinner: boolean;
   filename: string;
+  typeVal: string;
+  descType: string;
   errors: {
     name: string;
     fingerprint: string;
     info: string;
     type: string;
-
+    description: string;
     status: boolean;
   };
 };
