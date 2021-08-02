@@ -541,7 +541,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                       onChange={this.handleChange}
                       InputProps={{
                         endAdornment: (
-                          <Tooltip title={this.state.typeVal}>
+                          <Tooltip title={<h2>{this.state.typeVal}</h2>}>
                             <InfoIcon></InfoIcon>
                           </Tooltip>
                         ),
@@ -562,7 +562,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                       onChange={this.handleChange}
                       InputProps={{
                         endAdornment: !this.state.fingerprint.type && (
-                          <Tooltip title={this.state.descType}>
+                          <Tooltip title={<h2>{this.state.descType}</h2>}>
                             <InfoIcon></InfoIcon>
                           </Tooltip>
                         ),
