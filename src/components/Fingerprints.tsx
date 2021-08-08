@@ -106,7 +106,7 @@ class Fingerprints extends React.Component<
         item2 = new Date(b.date_updated).getTime();
       } else if(column === "type"){
         item1 = a.type.toUpperCase();
-        item2 = a.type.toUpperCase();
+        item2 = b.type.toUpperCase();
       } else {
         item1 = a.name.toUpperCase(); 
         item2 = b.name.toUpperCase();
