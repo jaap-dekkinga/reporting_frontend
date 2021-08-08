@@ -65,8 +65,6 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       info: "",
       date_created: "",
       date_updated: "",
-
-      url: "sample.mp3",
     },
     filename: "",
     isDialogOpen: false,

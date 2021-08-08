@@ -33,11 +33,10 @@ export const createFingerprint = async (
   formData.append("description", data.description);
   formData.append("type", data.type);
   formData.append("info", data.info);
-  formData.append("url", data.url);
 
   formData.append("uid", uid ?? "");
 
-  let response = await fetch(API.createFingerprintURL, {
+  let response = await fetch(API.createTuneUrl, {
     method: "POST",
     mode: "cors",
     body: formData,
@@ -83,10 +82,9 @@ export const updateFingerprint = async (
   formData.append("type", data.type);
   formData.append("info", data.info);
   formData.append("id", data.id.toString());
-  formData.append("url", data.url);
   formData.append("uid", uid ?? "");
 
-  let response = await fetch(API.updateFingerprintURL, {
+  let response = await fetch(API.updateTuneUrl, {
     method: "POST",
     mode: "cors",
     body: formData,
@@ -104,7 +102,7 @@ export const deleteFingerprint = async (id: string): Promise<any> => {
   const uid = store.getState().authorization.uid;
 
   let response = await fetch(
-    API.deleteFingerprintURL +
+    API.deleteTuneUrl +
       id +
       "&" +
       new URLSearchParams({ uid: uid as string }),
@@ -127,7 +125,7 @@ export const getFingerprints = async (
   const uid = store.getState().authorization.uid;
 console.log("uid ", uid);
   console.log("Get Fingerprint");
-  let url = API.getFingerprintsURL.replace("[PAGE]", page.toString());
+  let url = API.getTuneUrls.replace("[PAGE]", page.toString());
   url = url + "&" + new URLSearchParams({ uid: uid as string });
   console.log(url);
   let response = await fetch(url, {
@@ -146,8 +144,8 @@ export const getAllFingerPrints = async (): Promise<any> => {
   const uid = store.getState().authorization.uid;
   console.log("uid ", uid);
     console.log("Get Fingerprint");
-    // let url = API.getAllFingerprintsURL.replace("[PAGE]", page.toString());
-  let  url = API.getAllFingerprintsURL + "&" + new URLSearchParams({ uid: uid as string });
+    // let url = API.getAllTuneUrls.replace("[PAGE]", page.toString());
+  let  url = API.getAllTuneUrls + "&" + new URLSearchParams({ uid: uid as string });
     console.log(url);
   let response = await fetch(url, {
     method: "GET",

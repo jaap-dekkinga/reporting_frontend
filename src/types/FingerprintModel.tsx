@@ -20,7 +20,6 @@ export interface FingerprintModel {
   info: string;
   name: string;
   type: string;
-  url: string;
 }
 export interface FingerprintProps extends WithStyles {
   model?: FingerprintModel;

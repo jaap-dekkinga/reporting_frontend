@@ -31,11 +31,11 @@ export const API = {
   getTuneUrlIDs: base_url1 + "getTuneURL_IDs",
   getGraphData: base_url1 + "getGraphData",
   getTop10minuties: base_url1 + "getTop10minuties",
-  createFingerprintURL: base_url + "create-fingerprint",
-  updateFingerprintURL: base_url + "update-fingerprint",
-  deleteFingerprintURL: base_url + "delete-fingerprint?id=",
-  getFingerprintsURL: base_url + "get-fingerprint?limit=10&offset=[PAGE]",
-  getAllFingerprintsURL: base_url + "get-fingerprint",
+  createTuneUrl: base_url + "create-tuneurl",
+  updateTuneUrl: base_url + "update-tuneurl",
+  deleteTuneUrl: base_url + "delete-tuneurl?id=",
+  getTuneUrls: base_url + "get-tuneurl?limit=10&offset=[PAGE]",
+  getAllTuneUrls: base_url + "get-tuneurl",
   typesURL: base_url + "type",
 };
 
