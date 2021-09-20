@@ -123,13 +123,17 @@ export const getFingerprints = async (
   page: number
 ): Promise<FingerprintsData> => {
   const uid = store.getState().authorization.uid;
-console.log("uid ", uid);
+  const role = store.getState().authorization.role || '';
+  const requestHeaders: HeadersInit = new Headers();
+  requestHeaders.set('Authorization', role);
+  console.log("uid ", uid);
   console.log("Get Fingerprint");
   let url = API.getTuneUrls.replace("[PAGE]", page.toString());
   url = url + "&" + new URLSearchParams({ uid: uid as string });
   console.log(url);
   let response = await fetch(url, {
     method: "GET",
+    headers: requestHeaders,
     mode: "cors",
   }).then(handleErrors);
   let result = await response.json().then((data) => {
