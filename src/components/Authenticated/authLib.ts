@@ -7,6 +7,7 @@ type authT = typeof initialState.authorization;
 interface tokenPayloadT extends authT {
     exp: number;
     sub: string;
+    'cognito:groups': any;
 };
 
 export default class Authentication {
@@ -58,11 +59,14 @@ export default class Authentication {
             if (keys[i].kid === tokenObj1.kid) {
                 const pem = jwkToPem(keys[i]);
                 const tokenPayload: tokenPayloadT = jwt.verify(idToken, pem, { algorithm: [tokenObj1.alg] } as jwt.VerifyOptions) as tokenPayloadT;
-
-                //console.log(tokenPayload);
-                
+                let role;
+                console.log(tokenPayload);
+                if(tokenPayload['cognito:groups'] && tokenPayload['cognito:groups'].length){
+                    role = tokenPayload['cognito:groups'][0];
+                }
                 return {
                     email: tokenPayload.email,
+                    role,
                     name: tokenPayload.name,
                     expired: tokenPayload.exp,
                     uid: tokenPayload.sub,
