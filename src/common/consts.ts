@@ -14,7 +14,7 @@ export const initialState = {
     name: null as null | string,
     role: null as null | string,
     expired: null as null | number,
-    uid: null as null | string,
+    uid: null as null | string
   },
 };
 
@@ -38,6 +38,7 @@ export const API = {
   getTuneUrls: base_url + "get-tuneurl?limit=10&offset=[PAGE]",
   getAllTuneUrls: base_url + "get-tuneurl",
   typesURL: base_url + "type",
+  triggerTypesURL: base_url + "get-sound",
 };
 
 export const drawerWidth = 240;

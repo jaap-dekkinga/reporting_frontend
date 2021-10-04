@@ -15,6 +15,7 @@ export interface FingerprintModel {
   date_created: string;
   date_updated: string;
   description: string;
+  triggerSound: string;
   fingerprint?: Blob;
   id: number;
   info: string;
@@ -36,6 +37,12 @@ export interface FingerprintType {
   status: string;
 }
 
+export interface TriggerType {
+  id: string;
+  name: string;
+  status: string;
+}
+
 export type FingerprintsData = {
   count: number;
   data: FingerprintModel[];
@@ -44,6 +51,7 @@ export type FingerprintsData = {
 export type FingerprintState = {
   types: FingerprintType[];
   fingerprint: FingerprintModel;
+  triggerSound:TriggerType[];
   fingerprintdata:Blob;
   isDialogOpen: boolean;
   isDownloadOpen: boolean;
@@ -57,6 +65,7 @@ export type FingerprintState = {
     info: string;
     type: string;
     description: string;
+    triggerSound:string;
     status: boolean;
   };
 };

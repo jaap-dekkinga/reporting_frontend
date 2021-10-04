@@ -28,6 +28,7 @@ import {
   getFingerprints,
   updateFingerprint,
   getAllFingerPrints,
+  loadTriggerSoundTypes
 } from "../services/Fingerprint.service";
 import { FormHelperText } from "@material-ui/core";
 import { letterSpacing } from "@material-ui/system";
@@ -53,6 +54,7 @@ const styles = (theme: Theme) =>
 class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   state: FingerprintState = {
     types: [],
+    triggerSound:[],
     typeVal:
     "Capture in 'Type' the destination info based on TuneURL type. For example phone number or website.",
     descType:
@@ -62,6 +64,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       name: "",
       type: "",
       description: "",
+      triggerSound:"",
       info: "",
       date_created: "",
       date_updated: "",
@@ -77,6 +80,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       info: "",
       type: "",
       description: "",
+      triggerSound: "",
       status: false,
     },
   };
@@ -92,6 +96,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
 
   handleClickOpen = () => {
     this.loadTypes();
+    this.loadTriggerSoundTypes();
   };
 
   fileInputRef: React.RefObject<HTMLInputElement> = React.createRef();
@@ -294,10 +299,11 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       info: "",
       type: "",
       description: "",
+      triggerSound: "",
       status: false,
     };
 
-    let { name, type, info, fingerprint, description } = this.state.fingerprint;
+    let { name, type, info, fingerprint, triggerSound, description } = this.state.fingerprint;
     if (!this.props.isEditMode) {
       let valid;
       switch (type) {
@@ -371,6 +377,11 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
       errors.status = true;
     }
 
+    if (triggerSound.length === 0) {
+      errors.triggerSound = "Please select  Trigger sound.";
+      errors.status = true;
+    }
+
     return errors;
   };
 
@@ -393,6 +404,33 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
         this.setState({
           ...this.state,
           types: data,
+          showSpinner: false,
+        });
+      })
+      .catch((error) => {
+        this.setState({
+          ...this.state,
+          showSpinner: false,
+        });
+        alert(error.message);
+      });
+  };
+
+  loadTriggerSoundTypes = () => {
+    this.setState({
+      ...this.state,
+      showSpinner: true,
+      isDialogOpen: true,
+    });
+    let result = loadTriggerSoundTypes();
+
+    result
+      .then((data) => {
+        console.log(data);
+
+        this.setState({
+          ...this.state,
+          triggerSound: data,
           showSpinner: false,
         });
       })
@@ -489,6 +527,28 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                     {errors.fingerprint && this.renderError(errors.fingerprint)}
                   </Grid>
 				   )}
+            <Grid item>
+                    <TextField
+                      id="triggerSound"
+                      name="triggerSound"
+                      select
+                      label="Trigger Sound"
+                      value={this.state.fingerprint.triggerSound}
+                      onChange={this.handleChange}
+                      fullWidth
+                      required
+                    >
+                      {this.state.triggerSound &&
+                        this.state.triggerSound.length > 0 &&
+                        this.state.triggerSound.map((option) => (
+                          <MenuItem key={option.id} value={option.id}>
+                            {option.name}
+                          </MenuItem>
+                        ))}
+                    </TextField>
+                    {errors.triggerSound && this.renderError(errors.triggerSound)}
+                  </Grid>
+
                   <Grid item>
                     <TextField
                       id="type"

@@ -18,6 +18,21 @@ export const getFingerprintTypes = async (): Promise<any> => {
   // }
 };
 
+// returns the type of fingerprints
+export const loadTriggerSoundTypes = async (): Promise<any> => {
+  let response = await fetch(API.triggerTypesURL, {
+    method: "GET",
+    mode: "cors",
+  }).then(handleErrors);
+
+  let result = await response.json().then((data) => {
+    return data;
+  });
+
+  return result;
+  // }
+};
+
 //create
 export const createFingerprint = async (
   data: FingerprintModel
@@ -33,6 +48,7 @@ export const createFingerprint = async (
   formData.append("description", data.description);
   formData.append("type", data.type);
   formData.append("info", data.info);
+  formData.append("triggerSoundId", data.triggerSound);
 
   formData.append("uid", uid ?? "");
 
@@ -83,6 +99,7 @@ export const updateFingerprint = async (
   formData.append("info", data.info);
   formData.append("id", data.id.toString());
   formData.append("uid", uid ?? "");
+  formData.append("triggerSoundId", data.triggerSound);
 
   let response = await fetch(API.updateTuneUrl, {
     method: "POST",
