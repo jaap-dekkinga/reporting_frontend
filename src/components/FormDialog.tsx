@@ -54,7 +54,7 @@ const styles = (theme: Theme) =>
 class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
   state: FingerprintState = {
     types: [],
-    triggerSound:[],
+    triggerSounds:[],
     typeVal:
     "Capture in 'Type' the destination info based on TuneURL type. For example phone number or website.",
     descType:
@@ -234,7 +234,14 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
 
     if (this.props.model) {
       if (this.isFingerprintChanged) {
-        let res = updateFingerprint(this.state.fingerprint);
+        let triggerId = '';
+        this.state.triggerSounds.map(x=> {
+          if(this.state.fingerprint.triggerSound == x.name){
+            triggerId= x.id;
+          }
+        });
+
+        let res = updateFingerprint(this.state.fingerprint, triggerId);
         res
           .then((data) => {
             this.setState({
@@ -263,7 +270,13 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
           this.props.submitCancelCallback(true);
       }
     } else {
-      let res = createFingerprint(this.state.fingerprint);
+      let triggerId = '';
+      this.state.triggerSounds.map(x=> {
+        if(this.state.fingerprint.triggerSound == x.name){
+          triggerId= x.id;
+        }
+      });
+      let res = createFingerprint(this.state.fingerprint, triggerId);
       res
         .then(async (data) => {
           this.setState({
@@ -430,7 +443,7 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
 
         this.setState({
           ...this.state,
-          triggerSound: data,
+          triggerSounds: data,
           showSpinner: false,
         });
       })
@@ -538,10 +551,10 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
                       fullWidth
                       required
                     >
-                      {this.state.triggerSound &&
-                        this.state.triggerSound.length > 0 &&
-                        this.state.triggerSound.map((option) => (
-                          <MenuItem key={option.id} value={option.id}>
+                      {this.state.triggerSounds &&
+                        this.state.triggerSounds.length > 0 &&
+                        this.state.triggerSounds.map((option) => (
+                          <MenuItem key={option.id} value={option.name}>
                             {option.name}
                           </MenuItem>
                         ))}

@@ -51,7 +51,7 @@ export type FingerprintsData = {
 export type FingerprintState = {
   types: FingerprintType[];
   fingerprint: FingerprintModel;
-  triggerSound:TriggerType[];
+  triggerSounds:TriggerType[];
   fingerprintdata:Blob;
   isDialogOpen: boolean;
   isDownloadOpen: boolean;

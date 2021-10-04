@@ -35,7 +35,8 @@ export const loadTriggerSoundTypes = async (): Promise<any> => {
 
 //create
 export const createFingerprint = async (
-  data: FingerprintModel
+  data: FingerprintModel,
+  triggerId: string
 ): Promise<any> => {
   // setShowSpinner(true);
   const formData = new FormData();
@@ -48,7 +49,7 @@ export const createFingerprint = async (
   formData.append("description", data.description);
   formData.append("type", data.type);
   formData.append("info", data.info);
-  formData.append("triggerSoundId", data.triggerSound);
+  formData.append("triggerSoundId", triggerId);
 
   formData.append("uid", uid ?? "");
 
@@ -85,32 +86,30 @@ const handleErrors = (response: Response) => {
 
 //update
 export const updateFingerprint = async (
-  data: FingerprintModel
+  data: FingerprintModel,
+  triggerId: string
 ): Promise<any> => {
   const formData = new FormData();
   const uid = store.getState().authorization.uid;
 
-  if (undefined !== data.fingerprint || null !== data.fingerprint) {
-    formData.append("mp3file", data.fingerprint!);
-  }
   formData.append("name", data.name);
   formData.append("description", data.description);
   formData.append("type", data.type);
   formData.append("info", data.info);
   formData.append("id", data.id.toString());
   formData.append("uid", uid ?? "");
-  formData.append("triggerSoundId", data.triggerSound);
+  formData.append("triggerSoundId", triggerId);
 
   let response = await fetch(API.updateTuneUrl, {
     method: "POST",
     mode: "cors",
     body: formData,
   });
-  let result = await response.json().then((data) => {
-    return data;
-  });
+  // let result = await response.json().then((data) => {
+  //   return data;
+  // });
 
-  return result;
+  return response;
 };
 
 //delete

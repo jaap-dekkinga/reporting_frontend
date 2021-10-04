@@ -242,6 +242,9 @@ class Fingerprints extends React.Component<
                     <StyledTableCell onClick={this.onSort("name")}>
                       Name <span className={this.setArrow("name")}></span>
                     </StyledTableCell>
+                    <StyledTableCell onClick={this.onSort("triggerSound")}>
+                      Trigger Sound <span className={this.setArrow("triggerSound")}></span>
+                    </StyledTableCell>
                     {/* <StyledTableCell>Description</StyledTableCell> */}
                     <StyledTableCell>Info</StyledTableCell>
                     <StyledTableCell onClick={this.onSort("date_created")}>
@@ -266,6 +269,7 @@ class Fingerprints extends React.Component<
                             {row.type}
                           </StyledTableCell>
                           <StyledTableCell>{row.name}</StyledTableCell>
+                          <StyledTableCell>{row.triggerSound}</StyledTableCell>
                           {/* <StyledTableCell align="right">
                           {row.description.substring(0, 20)+ '...'}
                         </StyledTableCell> */}
