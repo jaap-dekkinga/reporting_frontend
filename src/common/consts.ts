@@ -14,7 +14,7 @@ export const initialState = {
     name: null as null | string,
     role: null as null | string,
     expired: null as null | number,
-    uid: null as null | string
+    uid: "a659bbfb-a584-4abf-b8f8-05a8dca4fc4c",
   },
 };
 
@@ -25,7 +25,8 @@ export enum interestActions {
   "shared" = "shared",
 }
 
-const base_url1 = "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/";
+// const base_url1 = "https://65neejq3c9.execute-api.us-east-2.amazonaws.com/";
+const base_url1 = "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/";
 const base_url = "https://pnz3vadc52.execute-api.us-east-2.amazonaws.com/dev/";
 
 export const API = {
