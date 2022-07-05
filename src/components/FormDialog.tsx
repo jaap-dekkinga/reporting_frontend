@@ -334,31 +334,31 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             errors.status = true;
           }
           break;
-        case "phone":
-          valid =
-            /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(
+          case "phone":
+            valid =
+            /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/g.test(
+                info
+              );
+            if (!valid) {
+              errors.info = "Please enter valid phone number";
+              errors.status = true;
+            }
+            break;
+          case "sms":
+            valid =
+            /^[+]?(1\-|1\s|1|\d{3}\-|\d{3}\s|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/g.test(
               info
-            );
-          if (!valid) {
-            errors.info = "Please enter valid phone number";
-            errors.status = true;
-          }
-          break;
-        case "sms":
-          valid =
-            /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(
-              info
-            );
-          if (!valid) {
-            errors.info = "Please enter valid phone number";
-            errors.status = true;
-          }
-          if(!description){
-            errors.description = "Description can not be empty";
-            errors.status = true;
-          }
-          break;
-        case "poll":
+              );
+            if (!valid) {
+              errors.info = "Please enter valid phone number";
+              errors.status = true;
+            }
+            if(!description){
+              errors.description = "Description can not be empty";
+              errors.status = true;
+            }
+            break;
+          case "poll":
           break;
         case "coupon":
           valid = /^(http|https):\/\/[^ "]+$/.test(info);
