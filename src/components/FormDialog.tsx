@@ -367,6 +367,13 @@ class FormDialog extends React.Component<FingerprintProps, FingerprintState> {
             errors.status = true;
           }
           break;
+        case "CYOA":
+          valid = /^(http|https):\/\/[^ "]+$/.test(info);
+          if (!valid) {
+            errors.info = "Please enter valid URL with http/https.";
+            errors.status = true;
+          }
+          break;
         default:
           break;
       }
